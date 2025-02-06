@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: api-invocation
+  data:
+    mongodb:
+      host: localhost
+      database: api_invocation
+      port: 27017
