@@ -39,8 +39,12 @@ public class InvocationService {
         return invocationRepository.findAll();
     }
 
-    public void saveInvocation(Invocation invocation) {
-        invocationRepository.save(invocation);
+    public Invocation createInvocation(Invocation invocation) {
+        return invocationRepository.save(invocation);
+    }
+
+    public List<Invocation> createAllInvocations(List<Invocation> invocations) {
+        return invocationRepository.saveAll(invocations);
     }
 
     public void deleteInvocation(String id) {

@@ -1,17 +1,19 @@
 package fr.imt.invoc_api.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.MongoId;
-
-import java.util.UUID;
 
 @Getter
+@Builder
+@AllArgsConstructor
 @Document(collection = "invocation")
 public class Invocation {
 
-    @MongoId
-    private UUID id;
+    @Id
+    private String id;
     private Type element;
     private float hp;
     private float atk;
