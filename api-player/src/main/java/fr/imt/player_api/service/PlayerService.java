@@ -54,8 +54,8 @@ public class PlayerService {
 
     public PlayerModel createPlayer(PlayerModel player) {
         try {
-            if (player.invalidMonsterConfiguration()){
-                throw new Exception("Monster configuration is invalid");
+            if (player.invalidPlayerConfiguration()){
+                throw new Exception("Player configuration is invalid");
             }
             return playerRepository.save(player);
         } catch (Exception e) {
@@ -91,6 +91,13 @@ public class PlayerService {
         } catch (Exception e) {
             throw new RuntimeException("Error deleting player", e);
         }
+    }
+
+    public PlayerModel gainExp(String userId, int exp) {
+        Optional<PlayerModel> player = playerRepository.findById(userId);
+        player.get().setCurr_exp(player.get().getCurr_exp() + exp);
+        playerRepository.save(player.get());
+        return player.get();
     }
 
 

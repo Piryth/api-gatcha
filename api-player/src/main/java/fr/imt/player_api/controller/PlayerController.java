@@ -51,6 +51,12 @@ public class PlayerController {
         return ResponseEntity.ok(player);
     }
 
+    @PostMapping("/{id}/gainExp")
+    public ResponseEntity<PlayerModel> gainExp(@PathVariable String id, @RequestBody int exp) {
+        PlayerModel player = playerService.gainExp(id, exp);
+        return ResponseEntity.ok(player);
+    }
+
     //Lister les monstres du joueur
     @GetMapping("/{id}/listMonsters")
     public ResponseEntity<List<Object>> listMonstersOfPlayer(@PathVariable String id) {

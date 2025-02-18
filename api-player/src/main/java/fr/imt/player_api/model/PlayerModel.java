@@ -25,16 +25,19 @@ public class PlayerModel {
     private int curr_exp;
     @Setter
     private List<String> monsters;
+    @Setter
+    private String name;
 
-    public PlayerModel(int level, int exp, int curr_exp, List<String> monsters) {
+    public PlayerModel(int level, int exp, int curr_exp, List<String> monsters, String name) {
         this.level = level;
         this.exp = exp;
         this.curr_exp = curr_exp;
         this.monsters = monsters;
+        this.name = name;
     }
 
-    public boolean invalidMonsterConfiguration() {
-        return this.monsters.size() < 10 + this.getLevel();
+    public boolean invalidPlayerConfiguration() {
+       return this.monsters.size() < 10 + this.getLevel() || this.exp != (50 * Math.pow(1.1, getLevel() - 1));
     }
 
     public void increaseMonstersMaxSize() {
@@ -45,9 +48,7 @@ public class PlayerModel {
     }
 
     public void increaseNecessaryExpForLevelUp() {
-        // Calcule l'XP nécessaire pour le niveau suivant, basé sur la formule donnée
         int xpForNextLevel = (int) (50 * Math.pow(1.1, getLevel() - 1));
-        // Mettre à jour l'XP nécessaire dans le modèle (si ce champ existe)
         setExp(xpForNextLevel);
     }
 
@@ -57,6 +58,7 @@ public class PlayerModel {
     public String toString() {
         return "PlayerModel{" +
                 "id='" + id + '\'' +
+                "name='" + name + '\'' +
                 ", level=" + level +
                 ", exp=" + exp +
                 ", curr_exp=" + curr_exp +
