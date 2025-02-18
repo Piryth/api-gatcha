@@ -14,8 +14,49 @@ public class PlayerService {
     @Autowired
     private PlayerRepository playerRepository;
 
+    public PlayerModel levelUp(String userId) {
+        try {
+            // Chercher le joueur par ID
+            PlayerModel player = playerRepository.findById(userId)
+                    .orElseThrow(() -> new Exception("No such player"));
+
+            // Augmenter le niveau
+            int newLevel = player.getLevel() + 1;
+            player.setLevel(newLevel);
+
+            // Réinitialiser l'XP à 0 après le level-up
+            player.setCurr_exp(0);
+
+            // Augmenter la taille maximale de la liste des monstres en fonction du niveau
+            player.increaseMonstersMaxSize();
+
+            // Mettre à jour l'XP nécessaire pour le prochain level-up
+            player.increaseNecessaryExpForLevelUp();
+
+            // Sauvegarder les modifications du joueur dans le repository
+            playerRepository.save(player);
+
+            return player;
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error leveling up the player", e);
+        }
+    }
+
+    public int getLevelOfPlayer(String userId) {
+        try {
+            Optional<PlayerModel> player = playerRepository.findById(userId);
+           return player.get().getLevel();
+        } catch (Exception e) {
+            throw new RuntimeException("Error getting level of a player", e);
+        }
+    }
+
     public PlayerModel createPlayer(PlayerModel player) {
         try {
+            if (player.invalidMonsterConfiguration()){
+                throw new Exception("Monster configuration is invalid");
+            }
             return playerRepository.save(player);
         } catch (Exception e) {
             throw new RuntimeException("Error creating player", e);
@@ -52,21 +93,15 @@ public class PlayerService {
         }
     }
 
-    public String updatePlayer(String id, PlayerModel updatedPlayer) {
+
+    public List<Object> listMonstersOfPlayer(String userId){
         try {
-            Optional<PlayerModel> playerToUpdate = playerRepository.findById(id);
-            if (playerToUpdate.isEmpty()) {
-                return "No such player";
-            } else {
-                PlayerModel existingPlayer = playerToUpdate.get();
-                existingPlayer.setExp(updatedPlayer.getExp());
-                existingPlayer.setLevel(updatedPlayer.getLevel());
-                existingPlayer.setCurr_exp(updatedPlayer.getCurr_exp());
-                existingPlayer.setMonsters(updatedPlayer.getMonsters());
-                return "Player updated successfuly";
-            }
+            Optional<PlayerModel> player =  playerRepository.findById(userId);
+            //appel à l'api de félix avec player.monsters
+            //Return la liste
+            return List.of();
         } catch (Exception e) {
-            throw new RuntimeException("Error updating player", e);
+            throw new RuntimeException("Error getting monsters of a player", e);
         }
     }
 

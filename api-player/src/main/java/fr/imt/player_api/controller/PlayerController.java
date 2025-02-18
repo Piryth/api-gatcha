@@ -21,7 +21,6 @@ public class PlayerController {
         PlayerModel createdPlayer = playerService.createPlayer(player);
         return ResponseEntity.ok(createdPlayer);
     }
-
     @GetMapping("/list")
     public ResponseEntity<List<PlayerModel>> listPlayers(){
         List<PlayerModel> players = playerService.listPlayers();
@@ -34,17 +33,33 @@ public class PlayerController {
         return ResponseEntity.ok(player);
     }
 
+    @GetMapping("/{id}/level")
+    public ResponseEntity<Integer> getPlayerLevel(@PathVariable String id){
+        int level = playerService.getLevelOfPlayer(id);
+        return ResponseEntity.ok(level);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletePlayer(@PathVariable String id) {
         String response = playerService.deletePlayer(id);
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/{id}/levelUp")
+    public ResponseEntity<PlayerModel> levelUp(@PathVariable String id) {
+        PlayerModel player = playerService.levelUp(id);
+        return ResponseEntity.ok(player);
+    }
 
-   @PutMapping("/{id}")
-   public ResponseEntity<String> updatePlayer(@PathVariable String id, @RequestBody PlayerModel player) {
-        String response =  playerService.updatePlayer(id, player);
-        return ResponseEntity.ok(response);
-   }
+    //Lister les monstres du joueur
+    @GetMapping("/{id}/listMonsters")
+    public ResponseEntity<List<Object>> listMonstersOfPlayer(@PathVariable String id) {
+        List<Object> monsters = playerService.listMonstersOfPlayer(id);
+        return ResponseEntity.ok(monsters);
+    }
+
+    //add new monstre a la liste
+
+    //suppression d'un monstre a la liste
 
 }
