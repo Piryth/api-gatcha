@@ -15,6 +15,6 @@ WORKDIR /app
 
 COPY --from=build /workspace/discovery-server/target/*.jar app.jar
 
-EXPOSE 8080/tcp
+EXPOSE 8761/tcp
 
 ENTRYPOINT ["java", "-Dspring.profiles.active=docker", "-jar", "./app.jar"]
