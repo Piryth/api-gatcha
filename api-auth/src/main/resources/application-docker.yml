@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: api-auth
+  data:
+    mongodb:
+      host: mongodb-gatcha
+      database: api_auth
+      port: 27017
+      username: root
+      password: example
+      authentication-database: admin
+token:
+  expiration: 1000

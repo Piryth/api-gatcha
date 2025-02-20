@@ -5,7 +5,7 @@ spring:
     mongodb:
       host: localhost
       database: api_invocation
-      port: 27018
+      port: 27019
       username: root
       password: azerty
       authentication-database: admin
