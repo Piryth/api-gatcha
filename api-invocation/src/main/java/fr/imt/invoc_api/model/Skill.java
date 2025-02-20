@@ -1,13 +1,15 @@
 package fr.imt.invoc_api.model;
 
 import lombok.Getter;
+import lombok.Value;
 
+@Value
 @Getter
 public class Skill {
-    private float dmg;
-    private int cooldown;
-    private int lvlMax;
-    private Ratio ratio;
 
+    float dmg;
+    int cooldown;
+    int lvlMax;
+    Ratio ratio;
 
 }

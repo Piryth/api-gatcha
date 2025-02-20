@@ -2,7 +2,6 @@ package fr.imt.invoc_api.service;
 
 import fr.imt.invoc_api.model.Invocation;
 import fr.imt.invoc_api.repository.InvocationRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,10 +10,13 @@ import java.util.Random;
 @Service
 public class InvocationService {
 
-    @Autowired
-    private InvocationRepository invocationRepository;
+    private final InvocationRepository invocationRepository;
 
     private static final Random random = new Random();
+
+    public InvocationService(InvocationRepository invocationRepository) {
+        this.invocationRepository = invocationRepository;
+    }
 
     public Invocation getRandomInvocation() {
         List<Invocation> invocations = invocationRepository.findAll();

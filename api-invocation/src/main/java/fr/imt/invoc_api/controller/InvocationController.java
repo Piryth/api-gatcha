@@ -2,7 +2,6 @@ package fr.imt.invoc_api.controller;
 
 import fr.imt.invoc_api.model.Invocation;
 import fr.imt.invoc_api.service.InvocationService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,8 +12,11 @@ import java.util.List;
 @RequestMapping("/v1/invocations")
 public class InvocationController {
 
-    @Autowired
-    InvocationService invocationService;
+    private final InvocationService invocationService;
+
+    public InvocationController(InvocationService invocationService) {
+        this.invocationService = invocationService;
+    }
 
     @GetMapping("/random")
     public Invocation getInvocation() {
