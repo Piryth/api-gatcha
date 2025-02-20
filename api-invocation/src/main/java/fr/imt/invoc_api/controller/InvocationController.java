@@ -3,6 +3,7 @@ package fr.imt.invoc_api.controller;
 import fr.imt.invoc_api.model.Invocation;
 import fr.imt.invoc_api.service.InvocationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,21 +26,20 @@ public class InvocationController {
         return invocationService.getInvocations();
     }
 
-    @PostMapping
-    public Invocation createInvocation(@RequestBody Invocation invocation) {
-        return invocationService.createInvocation(invocation);
-    }
-
     @PostMapping("/batch")
     public List<Invocation> createAllInvocations(@RequestBody List<Invocation> invocations) {
         return invocationService.createAllInvocations(invocations);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteInvocation(@PathVariable String id) {
-        invocationService.deleteInvocation(id);
-
+    @DeleteMapping("/")
+    public ResponseEntity<Void> deleteAllInvocations() {
+        invocationService.deleteAllInvocations();
         return ResponseEntity.ok().build();
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
 }

@@ -99,20 +99,12 @@ public class InvocationServiceTest {
     }
 
     @Test
-    void createInvocationSavesAndReturnsInvocation() {
-        Invocation invocation = new Invocation("1", Type.WATER, 0, 0, 0, 0, null, 0.3f);
-        when(invocationRepository.save(invocation)).thenReturn(invocation);
-
-        Invocation result = invocationService.createInvocation(invocation);
-
-        assertEquals(invocation, result);
-    }
-
-    @Test
     void createAllInvocationsSavesAndReturnsAllInvocations() {
         List<Invocation> invocations = Arrays.asList(
                 new Invocation("1", Type.WATER, 0, 0, 0, 0, null, 0.3f),
-                new Invocation("2", Type.FIRE, 0, 0, 0, 0, null, 0.3f)
+                new Invocation("2", Type.FIRE, 0, 0, 0, 0, null, 0.3f),
+                new Invocation("3", Type.FIRE, 0, 0, 0, 0, null, 0.3f),
+                new Invocation("4", Type.FIRE, 0, 0, 0, 0, null, 0.1f)
         );
         when(invocationRepository.saveAll(invocations)).thenReturn(invocations);
 
@@ -122,12 +114,23 @@ public class InvocationServiceTest {
     }
 
     @Test
+    void createAllInvocationsThrowsIllegalArgumentExceptionWhenSumIsNotOne() {
+        List<Invocation> invocations = Arrays.asList(
+                new Invocation("1", Type.WATER, 0, 0, 0, 0, null, 0.3f),
+                new Invocation("2", Type.FIRE, 0, 0, 0, 0, null, 0.3f),
+                new Invocation("3", Type.FIRE, 0, 0, 0, 0, null, 0.3f),
+                new Invocation("4", Type.FIRE, 0, 0, 0, 0, null, 0.2f)
+        );
+
+        assertThrows(IllegalArgumentException.class, () -> invocationService.createAllInvocations(invocations));
+    }
+
+    @Test
     void deleteInvocationDeletesInvocationById() {
-        String id = "1";
-        doNothing().when(invocationRepository).deleteById(id);
+        doNothing().when(invocationRepository).deleteAll();
 
-        invocationService.deleteInvocation(id);
+        invocationService.deleteAllInvocations();
 
-        verify(invocationRepository, times(1)).deleteById(id);
+        verify(invocationRepository, times(1)).deleteAll();
     }
 }

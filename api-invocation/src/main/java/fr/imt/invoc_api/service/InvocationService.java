@@ -39,16 +39,23 @@ public class InvocationService {
         return invocationRepository.findAll();
     }
 
-    public Invocation createInvocation(Invocation invocation) {
-        return invocationRepository.save(invocation);
-    }
+    public List<Invocation> createAllInvocations(List<Invocation> invocations) throws IllegalArgumentException{
+        // Check if the sum of loot rates is 1
+        float sum = invocations.stream()
+                .map(Invocation::getLootRate)
+                .reduce(0.0f, Float::sum);
 
-    public List<Invocation> createAllInvocations(List<Invocation> invocations) {
+        float epsilon = 1e-6f;
+
+        if (Math.abs(sum - 1.0f) >= epsilon) {
+            throw new IllegalArgumentException("Sum is incorrect! Expected ~1.0 but got: " + sum);
+        }
+
         return invocationRepository.saveAll(invocations);
     }
 
-    public void deleteInvocation(String id) {
-        invocationRepository.deleteById(id);
+    public void deleteAllInvocations() {
+        invocationRepository.deleteAll();
     }
 
 }

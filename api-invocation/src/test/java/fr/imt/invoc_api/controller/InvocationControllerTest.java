@@ -65,20 +65,12 @@ class InvocationControllerTest {
     }
 
     @Test
-    void createInvocationReturnsCreatedInvocation() {
-        Invocation invocation = new Invocation("1", null, 0, 0, 0, 0, null, 0.3f);
-        when(invocationService.createInvocation(invocation)).thenReturn(invocation);
-
-        Invocation result = invocationController.createInvocation(invocation);
-
-        assertEquals(invocation, result);
-    }
-
-    @Test
     void createAllInvocationsReturnsListOfCreatedInvocations() {
         List<Invocation> invocations = Arrays.asList(
                 new Invocation("1", null, 0, 0, 0, 0, null, 0.3f),
-                new Invocation("2", null, 0, 0, 0, 0, null, 0.3f)
+                new Invocation("2", null, 0, 0, 0, 0, null, 0.3f),
+                new Invocation("3", null, 0, 0, 0, 0, null, 0.3f),
+                new Invocation("4", null, 0, 0, 0, 0, null, 0.3f)
         );
         when(invocationService.createAllInvocations(invocations)).thenReturn(invocations);
 
@@ -89,10 +81,9 @@ class InvocationControllerTest {
 
     @Test
     void deleteInvocationReturnsOkResponse() {
-        String id = "1";
-        doNothing().when(invocationService).deleteInvocation(id);
+        doNothing().when(invocationService).deleteAllInvocations();
 
-        ResponseEntity<Void> response = invocationController.deleteInvocation(id);
+        ResponseEntity<Void> response = invocationController.deleteAllInvocations();
 
         assertEquals(ResponseEntity.ok().build(), response);
     }
