@@ -1,0 +1,90 @@
+services:
+  mongodb-gatcha:
+    image: mongo
+    container_name: mongodb-gatcha
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - mongodb-test:/data/db
+    expose:
+      - 27017
+    ports:
+      - "27017:27017"
+    restart: on-failure
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+
+  discovery-server:
+    build:
+      context: ./discovery-server
+      dockerfile: ./Dockerfile
+    container_name: discovery-server
+    ports:
+      - "8761:8761"
+    links:
+      - mongodb-test
+    restart: on-failure
+    depends_on:
+      mongodb-test:
+        condition: service_healthy
+
+  auth-api:
+    build:
+      context: ./api-auth
+      dockerfile: ./Dockerfile
+    container_name: auth-api
+    ports:
+      - "8080:8080"
+    links:
+      - mongodb-test
+    restart: on-failure
+    depends_on:
+      mongodb-test:
+        condition: service_healthy
+
+  player-api:
+    build:
+      context: ./api-player
+      dockerfile: ./Dockerfile
+    container_name: player-api
+    ports:
+      - "8081:8081"
+    links:
+      - mongodb-test
+    restart: on-failure
+    depends_on:
+      mongodb-test:
+        condition: service_healthy
+
+  invocation-api:
+    build:
+      context: ./api-invocation
+      dockerfile: ./Dockerfile
+    container_name: invocation-api
+    ports:
+      - "8082:8082"
+    links:
+      - mongodb-test
+    restart: on-failure
+    depends_on:
+      mongodb-test:
+        condition: service_healthy
+
+  monster-api:
+    build:
+      context: ./api-monster
+      dockerfile: ./Dockerfile
+    container_name: monster-api
+    ports:
+      - "8083:8083"
+    links:
+      - mongodb-test
+    restart: on-failure
+    depends_on:
+      mongodb-test:
+        condition: service_healthy
+
+
+volumes:
+  mongodb-test:
