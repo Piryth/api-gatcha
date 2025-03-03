@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("/api/players")
 public class PlayerController {
 
@@ -64,5 +65,10 @@ public class PlayerController {
         return ResponseEntity.ok(monsters);
     }
 
+    @PostMapping("/{playerId}/monsters/{monsterId}")
+    public ResponseEntity<String> addMonsterToPlayer(@PathVariable String playerId, @PathVariable String monsterId){
+        String res = playerService.addMonsterToPlayer(playerId,monsterId);
+        return ResponseEntity.ok(res);
+    }
 
 }
