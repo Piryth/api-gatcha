@@ -37,7 +37,7 @@ class InvocationControllerTest {
         Invocation invocation = new Invocation("1", null, 0, 0, 0, 0, null, 0.3f);
         when(invocationService.getRandomInvocation()).thenReturn(invocation);
 
-        Invocation result = invocationController.getInvocation();
+        Invocation result = invocationController.getInvocation().getBody();
 
         assertEquals(invocation, result);
     }
@@ -46,7 +46,7 @@ class InvocationControllerTest {
     void getInvocationReturnsNullWhenNoInvocation() {
         when(invocationService.getRandomInvocation()).thenReturn(null);
 
-        Invocation result = invocationController.getInvocation();
+        Invocation result = invocationController.getInvocation().getBody();
 
         assertNull(result);
     }
@@ -59,7 +59,7 @@ class InvocationControllerTest {
         );
         when(invocationService.getInvocations()).thenReturn(invocations);
 
-        List<Invocation> result = invocationController.getInvocations();
+        List<Invocation> result = invocationController.getInvocations().getBody();
 
         assertEquals(invocations, result);
     }

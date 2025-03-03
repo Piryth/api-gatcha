@@ -4,4 +4,5 @@ public enum Stat {
     HP,
     ATK,
     DEF,
+    VIT
 }
