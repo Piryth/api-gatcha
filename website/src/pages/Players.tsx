@@ -13,13 +13,19 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { ArrowUpCircleIcon, Copy, MoreHorizontal, Plus, Trash } from 'lucide-react';
+import { ArrowUpCircleIcon, Copy, MoreHorizontal, Plus, Trash, X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { toast } from 'sonner';
+import { z } from 'zod';
+import { newPlayerSchema } from '@/lib/zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 export type Player = {
   id: string;
@@ -35,6 +41,17 @@ export function Players() {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
+
+  const form = useForm<z.infer<typeof newPlayerSchema>>({
+    resolver: zodResolver(newPlayerSchema),
+    defaultValues: {
+      name: '',
+      level: 1,
+      exp: 50,
+      curr_exp: 0,
+      monsters: [],
+    },
+  });
 
   React.useEffect(() => {
     fetchPlayers();
@@ -73,11 +90,27 @@ export function Players() {
     }
   }
 
+  async function createNewPlayer(values: z.infer<typeof newPlayerSchema>) {
+    try {
+      await fetch(`http://localhost:8081/api/players/new`, {
+        method: 'post',
+        body: JSON.stringify(values),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      toast.success('Utilisateur ajouté avec succès');
+      fetchPlayers();
+    } catch (error) {
+      toast.error("Erreur lors de l'ajout d'un joueur :", error);
+    }
+  }
+
   const columns: ColumnDef<Player>[] = [
     {
       accessorKey: 'name',
       header: 'Nom',
-      cell: ({ row }) => <div className='capitalize'>{row.getValue('name')}</div>,
+      cell: ({ row }) => <div>{row.getValue('name')}</div>,
     },
     {
       accessorKey: 'level',
@@ -155,10 +188,40 @@ export function Players() {
           onChange={(event) => table.getColumn('name')?.setFilterValue(event.target.value)}
           className='max-w-sm'
         />
-        <Button variant='outline'>
-          <Plus className='w-4 h-4' />
-          <span>Ajouter un joueur</span>
-        </Button>
+
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant='outline'>
+              <Plus className='w-4 h-4' />
+              <span>Ajouter un joueur</span>
+            </Button>
+          </DialogTrigger>
+          <DialogContent className='sm:max-w-[625px]'>
+            <DialogHeader>
+              <DialogTitle>Création d'un nouveau joueur</DialogTitle>
+              <DialogDescription>Vous pouvez créer un joueur dans cette interface.</DialogDescription>
+            </DialogHeader>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(createNewPlayer)} className='space-y-8'>
+                <FormField
+                  control={form.control}
+                  name='name'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nom</FormLabel>
+                      <FormControl>
+                        <Input placeholder='Iron man' {...field} />
+                      </FormControl>
+                      <FormDescription>Le nom visible de votre joueur</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type='submit'>Enregistrer</Button>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
       </div>
       <div className='rounded-md border'>
         <Table>
