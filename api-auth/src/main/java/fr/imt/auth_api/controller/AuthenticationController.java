@@ -1,44 +1,45 @@
 package fr.imt.auth_api.controller;
 
-import fr.imt.auth_api.domain.AppUser;
+import fr.imt.auth_api.domain.AuthenticationValidationRequest;
+import fr.imt.auth_api.domain.AuthenticationValidationResponse;
 import fr.imt.auth_api.domain.auth.AuthenticationRequest;
-import fr.imt.auth_api.service.TokenService;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
+import fr.imt.auth_api.domain.auth.AuthenticationResponse;
+import fr.imt.auth_api.dto.AppUserDto;
+import fr.imt.auth_api.service.AuthenticationService;
+import fr.imt.auth_api.service.JwtService;
+import io.jsonwebtoken.MalformedJwtException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/auth-api/v1/auth")
 @RequiredArgsConstructor
 @RestController
+@Slf4j
 public class AuthenticationController {
 
-    private final TokenService tokenService;
-    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationService authenticationService;
 
-    public ResponseEntity<String> register(@RequestBody @Valid AuthenticationRequest authenticationRequest) {
-
-        AppUser appUser = AppUser.builder()
-                .email(authenticationRequest.getEmail())
-                .password(passwordEncoder.encode(authenticationRequest.getPassword()))
-                .username(authenticationRequest.getUsername())
-                .role("USER")
-                .build();
-
-        String token = tokenService.issueToken(appUser);
-        return ResponseEntity.ok(token);
+    @PostMapping("register")
+    public ResponseEntity<AuthenticationResponse> register (
+            @RequestBody AppUserDto appUserDto
+    ) {
+        return ResponseEntity.ok(authenticationService.register(appUserDto));
     }
 
-    public ResponseEntity<String> login(@RequestBody @NotNull String token) {
+    @PostMapping("token")
+    public ResponseEntity<AuthenticationResponse> getToken(
+            @RequestBody AuthenticationRequest authenticationRequest
+    ) {
+        log.info("Appel du service en cours {}", authenticationRequest.getUsername());
+        return ResponseEntity.ok(authenticationService.getToken(authenticationRequest));
+    }
 
-        if(tokenService.validateToken(token)) {
-            return ResponseEntity.ok("OK");
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+    @GetMapping("validate")
+    public ResponseEntity<AuthenticationValidationResponse> validateToken(@RequestHeader String authorization) {
+            log.info("validateToken with token {}", authorization);
+            return ResponseEntity.ok(new AuthenticationValidationResponse(authenticationService.validateToken(authorization), authorization));
     }
 }

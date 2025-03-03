@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: api-authentication
+  data:
+    mongodb:
+      host: localhost
+      database: api_auth
+      port: 27017
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    preferIpAddress: true

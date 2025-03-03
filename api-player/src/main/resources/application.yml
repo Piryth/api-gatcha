@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: api-player
+  # MongoDB
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: playerAPI
+
+server:
+  port: 8081
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    preferIpAddress: true
+    hostname: localhost

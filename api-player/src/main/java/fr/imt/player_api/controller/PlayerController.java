@@ -3,20 +3,18 @@ package fr.imt.player_api.controller;
 import fr.imt.player_api.dto.GainExperienceRequestDto;
 import fr.imt.player_api.model.PlayerModel;
 import fr.imt.player_api.service.PlayerService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("/player-api/v1/players")
+@RequiredArgsConstructor
 public class PlayerController {
 
-    @Autowired
-    private PlayerService playerService;
+    private final PlayerService playerService;
 
     @PostMapping("/new")
     public ResponseEntity<PlayerModel> createPlayer(@RequestBody PlayerModel player) {

@@ -1,0 +1,46 @@
+server:
+  port: 8888
+  shutdown: graceful
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    discovery:
+      enabled: true
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: api-authentication
+          uri: lb://api-authentication
+          predicates:
+            - Path=/api/auth/**
+
+        - id: api-player
+          uri: lb://api-player
+          predicates:
+            - Path=/api/players/**
+          filters:
+            - AuthenticationFilter
+  main:
+    web-application-type: reactive
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    preferIpAddress: true
+    hostname: localhost
+
+management:
+  endpoint:
+    gateway:
+      access: unrestricted
+  endpoints:
+    web:
+      exposure:
+        include: "*"
