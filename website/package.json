@@ -1,9 +1,9 @@
 {
-  "name": "portfolio",
+  "name": "api-gatcha",
   "private": true,
   "version": "1.0",
   "type": "module",
-  "homepage": "https://teovlt.github.io/portfolioFreelance/",
+  "proxy": "http://localhost:8081",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -13,9 +13,11 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@radix-ui/react-dropdown-menu": "^2.1.6",
     "@radix-ui/react-separator": "^1.1.2",
     "@radix-ui/react-slot": "^1.1.2",
     "@react-spring/web": "^9.7.5",
+    "@tanstack/react-table": "^8.21.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.454.0",
