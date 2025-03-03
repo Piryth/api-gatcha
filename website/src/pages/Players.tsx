@@ -109,7 +109,7 @@ export function Players() {
                 <MoreHorizontal />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align='end'>
+            <DropdownMenuContent align='start'>
               <DropdownMenuItem className='flex gap-4' onClick={() => navigator.clipboard.writeText(player.id)}>
                 <Copy className='w-4 h-4' /> Copier l'ID du joueur
               </DropdownMenuItem>
