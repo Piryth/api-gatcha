@@ -13,5 +13,5 @@ export const newPlayerSchema = z.object({
   level: z.number(),
   exp: z.number(),
   curr_exp: z.number(),
-  monsters: z.array(),
+  monsters: z.array(z.string()),
 });
