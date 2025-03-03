@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
@@ -70,23 +71,23 @@ public class MonsterController {
     }
 
     // Mettre à jour le niveau d'un monstre
-    @PutMapping("/levelUp/{id}")
+    @PutMapping("/{id}/levelUp")
     public ResponseEntity<Void> levelUpMonster(@PathVariable String id) {
-        boolean success = monsterService.levelUpMonster(id);
-        if (success) {
+        try {
+            monsterService.levelUpMonster(id);
             return ResponseEntity.ok().build();
-        } else {
+        } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     // Mettre à jour le niveau d'un monstre
-    @PutMapping("/addUpgradePoint/{id}")
+    @PutMapping("/{id}/addUpgradePoint")
     public ResponseEntity<Void> addUpgradePointMonster(@PathVariable String id) {
-        boolean success = monsterService.addUpgradePointMonster(id);
-        if (success) {
+        try {
+            monsterService.addUpgradePointMonster(id);
             return ResponseEntity.ok().build();
-        } else {
+        } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
     }

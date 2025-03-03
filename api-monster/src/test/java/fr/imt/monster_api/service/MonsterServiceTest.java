@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -96,21 +97,26 @@ class MonsterServiceTest {
         Monster monster = new Monster();
         monster.setId("123");
         monster.setLevel(5);
+
         when(monsterRepository.findById("123")).thenReturn(Optional.of(monster));
 
-        boolean result = monsterService.levelUpMonster("123");
+        monsterService.levelUpMonster("123");
 
-        assertTrue(result);
-        assertEquals(6, monster.getLevel());
-        verify(monsterRepository).save(monster);
+        assertEquals(6, monster.getLevel()); // Vérifie que le niveau a bien augmenté
+        verify(monsterRepository).save(monster); // Vérifie que save() a bien été appelé
     }
+
 
     @Test
-    void levelUpMonster_NotFound_ShouldReturnFalse() {
+    void levelUpMonster_NotFound_ShouldThrowException() {
         when(monsterRepository.findById("999")).thenReturn(Optional.empty());
 
-        boolean result = monsterService.levelUpMonster("999");
+        NoSuchElementException thrown = assertThrows(NoSuchElementException.class, () -> {
+            monsterService.levelUpMonster("999");
+        });
 
-        assertFalse(result);
+        assertEquals("Monstre non trouvé avec l'ID : 999", thrown.getMessage());
+        verify(monsterRepository, never()).save(any());
     }
+
 }
