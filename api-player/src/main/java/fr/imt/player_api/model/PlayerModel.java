@@ -37,8 +37,14 @@ public class PlayerModel {
     }
 
     public boolean invalidPlayerConfiguration() {
-       return this.monsters.size() < 10 + this.getLevel() || this.exp != (50 * Math.pow(1.1, getLevel() - 1));
+        return this.monsters.size() < 10 + this.getLevel() || this.exp != getTotalXP(this.getLevel());
     }
+
+    public double getTotalXP(int level) {
+        return 50 + 50 * (1 - Math.pow(1.1, level - 1)) / (1 - 1.1);
+    }
+
+
 
     public void increaseMonstersMaxSize() {
         int newMaxMonsters = 10 + getLevel();
