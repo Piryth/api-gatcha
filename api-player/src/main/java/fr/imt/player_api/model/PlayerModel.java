@@ -37,7 +37,7 @@ public class PlayerModel {
     }
 
     public boolean invalidPlayerConfiguration() {
-        return this.monsters.size() < 10 + this.getLevel() || this.exp != getTotalXP(this.getLevel());
+        return this.monsters.size() > 10 + this.getLevel() || this.exp != getTotalXP(this.getLevel());
     }
 
     public double getTotalXP(int level) {
