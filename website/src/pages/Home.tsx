@@ -44,9 +44,9 @@ export const Home = () => {
         <div className='bg-background p-6 rounded-xl shadow-lg'>
           <h2 className='text-2xl font-semibold text-primary mb-4'>Déploiement et configuration</h2>
           <p className='text-gray-700 dark:text-gray-300'>
-            Le projet tourne **intégralement** sous **Docker**. Un fichier{' '}
-            <code className='bg-gray-200 px-1 rounded'>docker-compose.yml</code> est fourni pour permettre un déploiement instantané sur
-            n'importe quelle machine.
+            Le projet tourne <strong>intégralement</strong> sous <strong>Docker</strong>. Un fichier
+            <code className=' px-1 rounded'>`docker-compose.yml`</code> est fourni pour permettre un déploiement instantané sur n'importe
+            quelle machine.
           </p>
         </div>
 
@@ -54,8 +54,9 @@ export const Home = () => {
         <div className='bg-background p-6 rounded-xl shadow-lg'>
           <h2 className='text-2xl font-semibold text-primary mb-4'>Tests & collaboration</h2>
           <p className='text-gray-700 dark:text-gray-300'>
-            🔥 **Qualité garantie :** Toutes les API sont couvertes par des **tests unitaires rigoureux**. 💡 **Travail d'équipe :** Ce
-            projet a été développé en groupe de 4 personnes avec Git pour assurer une bonne gestion du code.
+            🔥 <strong>Qualité garantie :</strong> Toutes les API sont couvertes par des <strong>tests unitaires rigoureux</strong>. 💡
+            <strong>Travail d'équipe :</strong> Ce projet a été développé en groupe de 4 personnes avec Git pour assurer une bonne gestion
+            du code.
           </p>
         </div>
       </div>
