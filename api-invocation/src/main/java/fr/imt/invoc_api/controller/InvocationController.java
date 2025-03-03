@@ -19,13 +19,21 @@ public class InvocationController {
     }
 
     @GetMapping("/random")
-    public Invocation getInvocation() {
-        return invocationService.getRandomInvocation();
+    public ResponseEntity<Invocation> getInvocation() {
+        try {
+            return ResponseEntity.ok(invocationService.getRandomInvocation());
+        } catch (IllegalStateException e) {
+            return ResponseEntity.internalServerError().body(null);
+        }
     }
 
     @GetMapping
-    public List<Invocation> getInvocations() {
-        return invocationService.getInvocations();
+    public ResponseEntity<List<Invocation>> getInvocations() {
+        try {
+            return ResponseEntity.ok(invocationService.getInvocations());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(null);
+        }
     }
 
     @PostMapping("/batch")

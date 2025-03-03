@@ -1,7 +1,11 @@
 package fr.imt.invoc_api.service;
 
+import fr.imt.invoc_api.client.MonsterApiService;
+import fr.imt.invoc_api.client.PlayerApiService;
 import fr.imt.invoc_api.model.Invocation;
+import fr.imt.invoc_api.model.save.SaveInvocation;
 import fr.imt.invoc_api.repository.InvocationRepository;
+import fr.imt.invoc_api.repository.SaveInvocationRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,14 +15,20 @@ import java.util.Random;
 public class InvocationService {
 
     private final InvocationRepository invocationRepository;
+    private final SaveInvocationRepository saveInvocationRepository;
 
     private static final Random random = new Random();
+    private final MonsterApiService monsterApiService;
+    private final PlayerApiService playerApiService;
 
-    public InvocationService(InvocationRepository invocationRepository) {
+    public InvocationService(InvocationRepository invocationRepository, SaveInvocationRepository saveInvocationRepository, MonsterApiService monsterApiService, PlayerApiService playerApiService) {
         this.invocationRepository = invocationRepository;
+        this.saveInvocationRepository = saveInvocationRepository;
+        this.monsterApiService = monsterApiService;
+        this.playerApiService = playerApiService;
     }
 
-    public Invocation getRandomInvocation() {
+    public Invocation getRandomInvocation() throws IllegalStateException {
         List<Invocation> invocations = invocationRepository.findAll();
 
         if (invocations.isEmpty()) {
@@ -28,20 +38,38 @@ public class InvocationService {
         float randVal = random.nextFloat();
 
         float cumulative = 0.0f;
-        for (Invocation invocation : invocations) {
-            cumulative += invocation.getLootRate();
+        Invocation invocation = null;
+
+        for (Invocation _invocation : invocations) {
+            cumulative += _invocation.getLootRate();
             if (randVal <= cumulative) {
-                return invocation;
+                invocation = _invocation;
+                break;
             }
         }
-        return null;
+
+        if (invocation == null) {
+            throw new IllegalStateException("No invocation found");
+        }
+
+        String playerId = "playerId";
+        SaveInvocation saveInvocation = SaveInvocation.builder()
+                .playerId(playerId)
+                .invocation(invocation)
+                .build();
+
+        saveInvocationRepository.save(saveInvocation);
+        String monsterId = monsterApiService.createMonster(invocation);
+        playerApiService.addMonster(playerId, monsterId);
+
+        return invocation;
     }
 
     public List<Invocation> getInvocations() {
         return invocationRepository.findAll();
     }
 
-    public List<Invocation> createAllInvocations(List<Invocation> invocations) throws IllegalArgumentException{
+    public List<Invocation> createAllInvocations(List<Invocation> invocations) throws IllegalArgumentException {
         // Check if the sum of loot rates is 1
         float sum = invocations.stream()
                 .map(Invocation::getLootRate)

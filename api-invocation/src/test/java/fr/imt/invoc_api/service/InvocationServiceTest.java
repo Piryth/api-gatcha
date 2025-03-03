@@ -1,8 +1,11 @@
 package fr.imt.invoc_api.service;
 
+import fr.imt.invoc_api.client.MonsterApiService;
+import fr.imt.invoc_api.client.PlayerApiService;
 import fr.imt.invoc_api.model.Invocation;
 import fr.imt.invoc_api.model.Type;
 import fr.imt.invoc_api.repository.InvocationRepository;
+import fr.imt.invoc_api.repository.SaveInvocationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -19,6 +22,15 @@ public class InvocationServiceTest {
 
     @Mock
     private InvocationRepository invocationRepository;
+
+    @Mock
+    private SaveInvocationRepository saveInvocationRepository;
+
+    @Mock
+    private MonsterApiService monsterApiService;
+
+    @Mock
+    private PlayerApiService playerApiService;
 
     @InjectMocks
     private InvocationService invocationService;
