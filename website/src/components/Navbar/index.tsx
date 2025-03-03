@@ -31,13 +31,10 @@ export const Navbar = () => {
           <div className='flex gap-4 items-center'>
             <div className='flex gap-2'>
               <Button asChild variant='link'>
-                <Link to='/'>Accueil</Link>
+                <Link to='/joueurs'>Joueurs</Link>
               </Button>
               <Button asChild variant='link'>
-                <Link to='/joueurs'>Joueur</Link>
-              </Button>
-              <Button asChild variant='link'>
-                <Link to='/monstres'>Monstre</Link>
+                <Link to='/monstres'>Monstres</Link>
               </Button>
             </div>
             <Separator orientation='vertical' className='h-6' />
@@ -67,21 +64,15 @@ export const Navbar = () => {
 
           <div className='flex flex-col gap-4 p-8 pt-2'>
             <Button asChild variant='link' className='flex gap-4 items-center justify-start' onClick={() => setIsOpen(!isOpen)}>
-              <Link to='/'>
-                <House className='w-4 h-4' />
-                Accueil
-              </Link>
-            </Button>
-            <Button asChild variant='link' className='flex gap-4 items-center justify-start' onClick={() => setIsOpen(!isOpen)}>
               <Link to='/joueurs'>
                 <User className='w-4 h-4' />
-                Joueur
+                Joueurs
               </Link>
             </Button>
             <Button asChild variant='link' className='flex gap-4 items-center justify-start' onClick={() => setIsOpen(!isOpen)}>
               <Link to='/monstres'>
                 <Briefcase className='w-4 h-4' />
-                Monstre
+                Monstres
               </Link>
             </Button>
             <Separator />
