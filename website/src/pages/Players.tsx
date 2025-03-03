@@ -42,6 +42,8 @@ export function Players() {
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
+  const [open, setOpen] = React.useState(false);
+
   const form = useForm<z.infer<typeof newPlayerSchema>>({
     resolver: zodResolver(newPlayerSchema),
     defaultValues: {
@@ -100,6 +102,8 @@ export function Players() {
         },
       });
       toast.success('Utilisateur ajouté avec succès');
+      setOpen(false);
+      form.reset();
       fetchPlayers();
     } catch (error) {
       toast.error("Erreur lors de l'ajout d'un joueur :", error);
@@ -189,7 +193,7 @@ export function Players() {
           className='max-w-sm'
         />
 
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button variant='outline'>
               <Plus className='w-4 h-4' />
