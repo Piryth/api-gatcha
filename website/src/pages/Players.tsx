@@ -13,12 +13,13 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from 'lucide-react';
+import { ArrowUpCircleIcon, Copy, MoreHorizontal, Plus, Trash } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { toast } from 'sonner';
 
 export type Player = {
   id: string;
@@ -28,26 +29,49 @@ export type Player = {
   curr_exp: number;
 };
 
-export function Joueurs() {
+export function Players() {
   const [players, setPlayers] = React.useState<Player[]>([]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
-  // Fetch players data
   React.useEffect(() => {
-    async function fetchPlayers() {
-      try {
-        const response = await fetch('http://localhost:8081/api/players/list');
-        const data = await response.json();
-        setPlayers(data);
-      } catch (error) {
-        console.error('Erreur lors de la récupération des joueurs :', error);
-      }
-    }
     fetchPlayers();
   }, []);
+
+  async function fetchPlayers() {
+    try {
+      const response = await fetch('http://localhost:8081/api/players/list');
+      const data = await response.json();
+      setPlayers(data);
+    } catch (error) {
+      toast.error('Erreur lors de la récupération des joueurs :', error);
+    }
+  }
+
+  async function deletePlayer(playerId: String) {
+    try {
+      const response = await fetch(`http://localhost:8081/api/players/${playerId}`, {
+        method: 'delete',
+      });
+      const data = await response.text();
+      toast.success(data);
+      setPlayers(players.filter((p) => p.id != playerId));
+    } catch (error) {
+      toast.error("Erreur lors de la suppression d'un joueur :", error);
+    }
+  }
+
+  async function levelUp(playerId: String) {
+    try {
+      await fetch(`http://localhost:8081/api/players/${playerId}/levelUp`);
+      await fetchPlayers();
+      toast.success('Playel level increased sucessfuly');
+    } catch (error) {
+      toast.error("Erreur lors de la suppression d'un joueur :", error);
+    }
+  }
 
   const columns: ColumnDef<Player>[] = [
     {
@@ -86,9 +110,15 @@ export function Joueurs() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align='end'>
-              <DropdownMenuCheckboxItem onClick={() => navigator.clipboard.writeText(player.id)}>
-                Copier l'ID du joueur
-              </DropdownMenuCheckboxItem>
+              <DropdownMenuItem className='flex gap-4' onClick={() => navigator.clipboard.writeText(player.id)}>
+                <Copy className='w-4 h-4' /> Copier l'ID du joueur
+              </DropdownMenuItem>
+              <DropdownMenuItem className='flex gap-4' onClick={() => levelUp(player.id)}>
+                <ArrowUpCircleIcon className='w-4 h-4' /> Améliorer le joueur
+              </DropdownMenuItem>
+              <DropdownMenuItem className='flex gap-4 text-red-700 hover:!text-red-700' onClick={() => deletePlayer(player.id)}>
+                <Trash className='w-4 h-4' /> Supprimer le joueur
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         );
@@ -118,13 +148,17 @@ export function Joueurs() {
   return (
     <div className='w-full p-16'>
       <h1 className='text-4xl -'>Listes des joueurs</h1>
-      <div className='flex items-center py-4'>
+      <div className='flex items-center justify-between py-4'>
         <Input
           placeholder='Rechercher un joueur...'
           value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
           onChange={(event) => table.getColumn('name')?.setFilterValue(event.target.value)}
           className='max-w-sm'
         />
+        <Button variant='outline'>
+          <Plus className='w-4 h-4' />
+          <span>Ajouter un joueur</span>
+        </Button>
       </div>
       <div className='rounded-md border'>
         <Table>

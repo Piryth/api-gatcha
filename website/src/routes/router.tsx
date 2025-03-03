@@ -3,8 +3,8 @@ import { createBrowserRouter, Outlet } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '@/components/Footer';
 import { Home } from '@/pages/Home';
-import { Joueurs } from '@/pages/Joueurs';
-import { Monstres } from '@/pages/Monstres';
+import { Monsters } from '@/pages/Monsters';
+import { Players } from '@/pages/Players';
 
 const RootLayout = () => (
   <div className='flex flex-col min-h-screen'>
@@ -29,8 +29,8 @@ export const router = createBrowserRouter([
     ),
     children: [
       { path: '/', element: <Home /> },
-      { path: '/joueurs', element: <Joueurs /> },
-      { path: '/monstres', element: <Monstres /> },
+      { path: '/joueurs', element: <Players /> },
+      { path: '/monstres', element: <Monsters /> },
     ],
   },
 ]);
