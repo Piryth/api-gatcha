@@ -77,7 +77,7 @@ public class MonsterController {
             monsterService.levelUpMonster(id);
             return ResponseEntity.ok().build();
         } catch (NoSuchElementException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.internalServerError().build();
         }
     }
 
@@ -88,7 +88,7 @@ public class MonsterController {
             monsterService.addUpgradePointMonster(id);
             return ResponseEntity.ok().build();
         } catch (NoSuchElementException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.internalServerError().build();
         }
     }
 
