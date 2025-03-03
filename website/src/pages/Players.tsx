@@ -128,7 +128,7 @@ export function Players() {
     },
     {
       accessorKey: 'curr_exp',
-      header: 'Exp actuelle',
+      header: 'Expérience actuelle',
       cell: ({ row }) => <div className='text-left'>{row.getValue('curr_exp')}</div>,
     },
     {
