@@ -5,6 +5,7 @@ import fr.imt.player_api.repository.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +47,7 @@ public class PlayerService {
     public int getLevelOfPlayer(String userId) {
         try {
             Optional<PlayerModel> player = playerRepository.findById(userId);
-           return player.get().getLevel();
+            return player.get().getLevel();
         } catch (Exception e) {
             throw new RuntimeException("Error getting level of a player", e);
         }
@@ -54,7 +55,7 @@ public class PlayerService {
 
     public PlayerModel createPlayer(PlayerModel player) {
         try {
-            if (player.invalidPlayerConfiguration()){
+            if (player.invalidPlayerConfiguration()) {
                 throw new Exception("Player configuration is invalid");
             }
             return playerRepository.save(player);
@@ -100,10 +101,9 @@ public class PlayerService {
         return player.get();
     }
 
-
-    public List<Object> listMonstersOfPlayer(String userId){
+    public List<Object> listMonstersOfPlayer(String userId) {
         try {
-            Optional<PlayerModel> player =  playerRepository.findById(userId);
+            Optional<PlayerModel> player = playerRepository.findById(userId);
             //appel à l'api de félix avec player.monsters
             //Return la liste
             return List.of();
@@ -112,5 +112,22 @@ public class PlayerService {
         }
     }
 
+    public String addMonsterToPlayer(String userId, String MonsterId) {
+        try{
+        PlayerModel player = playerRepository.findById(userId)
+                .orElseThrow(() -> new Exception("No such player"));
+
+            List<String> monsters = player.getMonsters();
+            monsters.add(MonsterId);
+
+            playerRepository.save(player);
+
+            return "Utilisateur mis à jour avec succès";
+        }catch (Exception e) {
+            throw new RuntimeException("Error adding monster to the player", e);
+        }
+
+
+    }
 
 }

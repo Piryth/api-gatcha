@@ -65,5 +65,10 @@ public class PlayerController {
         return ResponseEntity.ok(monsters);
     }
 
+    @PostMapping("/{playerId}/monsters/{monsterId}")
+    public ResponseEntity<String> addMonsterToPlayer(@PathVariable String playerId, @PathVariable String monsterId){
+        String res = playerService.addMonsterToPlayer(playerId,monsterId);
+        return ResponseEntity.ok(res);
+    }
 
 }
