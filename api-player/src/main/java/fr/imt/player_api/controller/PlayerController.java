@@ -64,8 +64,5 @@ public class PlayerController {
         return ResponseEntity.ok(monsters);
     }
 
-    //add new monstre a la liste
-
-    //suppression d'un monstre a la liste
 
 }
