@@ -23,7 +23,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import { z } from 'zod';
-import { newPlayerSchema } from '@/lib/zod';
+import { addExpSchema, newPlayerSchema } from '@/lib/zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -45,12 +45,21 @@ export function Players() {
   const [rowSelection, setRowSelection] = React.useState({});
 
   const [open, setOpen] = React.useState(false);
+  const [open2, setOpen2] = React.useState(false);
 
   const form = useForm<z.infer<typeof newPlayerSchema>>({
     resolver: zodResolver(newPlayerSchema),
     defaultValues: {
       name: '',
       level: 0,
+    },
+  });
+
+  const formExp = useForm<z.infer<typeof addExpSchema>>({
+    resolver: zodResolver(addExpSchema),
+    defaultValues: {
+      experience: '0',
+      id: '',
     },
   });
 
@@ -112,6 +121,26 @@ export function Players() {
     }
   }
 
+  async function gainExp(values: z.infer<typeof addExpSchema>) {
+    try {
+      const player = players.find((p) => p.id == values.id);
+      delete values.id;
+      await fetch(`http://localhost:8081/api/players/${player.id}/gainExp`, {
+        method: 'post',
+        body: JSON.stringify(values),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      setOpen2(false);
+      formExp.reset();
+      await fetchPlayers();
+      toast.success(`Expérience ajoutée avec succès au joueur ${player.name}`);
+    } catch (error) {
+      toast.error("Erreur lors de l'ajout d'expérience :", error);
+    }
+  }
+
   const columns: ColumnDef<Player>[] = [
     {
       accessorKey: 'name',
@@ -153,6 +182,14 @@ export function Players() {
               </DropdownMenuItem>
               <DropdownMenuItem className='flex gap-4' onClick={() => levelUp(player.id)}>
                 <ArrowUpCircleIcon className='w-4 h-4' /> Améliorer le joueur
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className='flex gap-4'
+                onClick={() => {
+                  setOpen2(true), formExp.setValue('id', player.id);
+                }}
+              >
+                <Plus className='w-4 h-4' /> Ajouter de l'expérience
               </DropdownMenuItem>
               <DropdownMenuItem className='flex gap-4 text-red-700 hover:!text-red-700' onClick={() => deletePlayer(player.id)}>
                 <Trash className='w-4 h-4' /> Supprimer le joueur
@@ -266,6 +303,36 @@ export function Players() {
           </TableBody>
         </Table>
       </div>
+
+      {open2 && (
+        <Dialog open={open2} onOpenChange={setOpen2}>
+          <DialogContent className='sm:max-w-[625px]'>
+            <DialogHeader>
+              <DialogTitle>Ajouter de l'expérience</DialogTitle>
+              <DialogDescription>Vous pouvez ajouter de l'expérience à votre joueur.</DialogDescription>
+            </DialogHeader>
+            <Form {...formExp}>
+              <form onSubmit={formExp.handleSubmit(gainExp)} className='space-y-8'>
+                <FormField
+                  control={formExp.control}
+                  name='experience'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Expérience</FormLabel>
+                      <FormControl>
+                        <Input placeholder='100' {...field} />
+                      </FormControl>
+                      <FormDescription>L'expérience à ajouter à votre joueur</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type='submit'>Enregistrer</Button>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }
