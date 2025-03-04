@@ -13,7 +13,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { ArrowUpCircleIcon, Copy, MoreHorizontal, Plus, Trash, X } from 'lucide-react';
+import { ArrowUpCircleIcon, Copy, MoreHorizontal, Plus, RefreshCw, Trash, X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -32,7 +32,9 @@ export type Player = {
   name: string;
   level: number;
   exp: number;
-  curr_exp: number;
+  xpForNextLevel: number;
+  maxMonstersForLevel: number;
+  monsters: string[];
 };
 
 export function Players() {
@@ -48,10 +50,7 @@ export function Players() {
     resolver: zodResolver(newPlayerSchema),
     defaultValues: {
       name: '',
-      level: 1,
-      exp: 50,
-      curr_exp: 0,
-      monsters: [],
+      level: 0,
     },
   });
 
@@ -64,6 +63,7 @@ export function Players() {
       const response = await fetch('http://localhost:8081/api/players/list');
       const data = await response.json();
       setPlayers(data);
+      toast.success('Joueurs récupérés avec succès');
     } catch (error) {
       toast.error('Erreur lors de la récupération des joueurs :', error);
     }
@@ -71,11 +71,11 @@ export function Players() {
 
   async function deletePlayer(playerId: String) {
     try {
-      const response = await fetch(`http://localhost:8081/api/players/${playerId}`, {
+      await fetch(`http://localhost:8081/api/players/${playerId}`, {
         method: 'delete',
       });
-      const data = await response.text();
-      toast.success(data);
+      const playerName = players.find((p) => p.id == playerId)?.name;
+      toast.success(`Joueur ${playerName} supprimé avec succès`);
       setPlayers(players.filter((p) => p.id != playerId));
     } catch (error) {
       toast.error("Erreur lors de la suppression d'un joueur :", error);
@@ -86,13 +86,15 @@ export function Players() {
     try {
       await fetch(`http://localhost:8081/api/players/${playerId}/levelUp`);
       await fetchPlayers();
-      toast.success('Playel level increased sucessfuly');
+      const playerName = players.find((p) => p.id == playerId)?.name;
+      toast.success(`Joueur ${playerName} amélioré avec succès`);
     } catch (error) {
       toast.error("Erreur lors de la suppression d'un joueur :", error);
     }
   }
 
   async function createNewPlayer(values: z.infer<typeof newPlayerSchema>) {
+    console.log('a');
     try {
       await fetch(`http://localhost:8081/api/players/new`, {
         method: 'post',
@@ -101,10 +103,10 @@ export function Players() {
           'Content-Type': 'application/json',
         },
       });
-      toast.success('Utilisateur ajouté avec succès');
       setOpen(false);
       form.reset();
-      fetchPlayers();
+      await fetchPlayers();
+      toast.success(`Joueur ${values.name} créé avec succès`);
     } catch (error) {
       toast.error("Erreur lors de l'ajout d'un joueur :", error);
     }
@@ -127,9 +129,9 @@ export function Players() {
       cell: ({ row }) => <div className='text-left'>{row.getValue('exp')}</div>,
     },
     {
-      accessorKey: 'curr_exp',
-      header: 'Expérience actuelle',
-      cell: ({ row }) => <div className='text-left'>{row.getValue('curr_exp')}</div>,
+      accessorKey: 'xpForNextLevel',
+      header: 'Palier suivant',
+      cell: ({ row }) => <div className='text-left'>{row.getValue('xpForNextLevel')}</div>,
     },
     {
       id: 'actions',
@@ -142,7 +144,6 @@ export function Players() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant='ghost' className='h-8 w-8 p-0'>
-                <span className='sr-only'>Ouvrir le menu</span>
                 <MoreHorizontal />
               </Button>
             </DropdownMenuTrigger>
@@ -186,13 +187,19 @@ export function Players() {
     <div className='w-full p-16'>
       <h1 className='text-4xl -'>Listes des joueurs</h1>
       <div className='flex items-center justify-between py-4'>
-        <Input
-          placeholder='Rechercher un joueur...'
-          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
-          onChange={(event) => table.getColumn('name')?.setFilterValue(event.target.value)}
-          className='max-w-sm'
-        />
-
+        <div className='flex gap-4'>
+          <Input
+            placeholder='Rechercher un joueur...'
+            value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
+            onChange={(event) => table.getColumn('name')?.setFilterValue(event.target.value)}
+            className='max-w-sm'
+          />
+          <div>
+            <Button variant='outline' onClick={() => fetchPlayers()}>
+              <RefreshCw className='w-4 h-4' />
+            </Button>
+          </div>
+        </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button variant='outline'>
@@ -214,7 +221,7 @@ export function Players() {
                     <FormItem>
                       <FormLabel>Nom</FormLabel>
                       <FormControl>
-                        <Input placeholder='Iron man' {...field} />
+                        <Input placeholder='Joueur 1' {...field} />
                       </FormControl>
                       <FormDescription>Le nom visible de votre joueur</FormDescription>
                       <FormMessage />

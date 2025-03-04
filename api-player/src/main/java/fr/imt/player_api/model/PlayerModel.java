@@ -1,7 +1,7 @@
 package fr.imt.player_api.model;
 
-
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
@@ -16,58 +16,80 @@ public class PlayerModel {
 
     @Id
     private String id;
+
     @Setter
-    @Size(max = 50, min = 0)
+    @Min(0)
+    @Max(50)
     private int level;
+
     @Setter
     private int exp;
-    @Setter
-    private int curr_exp;
+
     @Setter
     private List<String> monsters;
+
     @Setter
     private String name;
 
-    public PlayerModel(int level, int exp, int curr_exp, List<String> monsters, String name) {
+    @Setter
+    private int xpForNextLevel;
+
+    public PlayerModel(int level, List<String> monsters, String name) {
         this.level = level;
-        this.exp = exp;
-        this.curr_exp = curr_exp;
-        this.monsters = monsters;
+        this.exp = 0;
+        this.monsters = monsters != null ? new ArrayList<>(monsters) : new ArrayList<>();
         this.name = name;
+        this.xpForNextLevel = calculateXpForNextLevel(level);
     }
 
-    public boolean invalidPlayerConfiguration() {
-        return this.monsters.size() < 10 + this.getLevel() || this.exp != getTotalXP(this.getLevel());
-    }
-
-    public double getTotalXP(int level) {
-        return 50 + 50 * (1 - Math.pow(1.1, level - 1)) / (1 - 1.1);
-    }
-
-
-
-    public void increaseMonstersMaxSize() {
-        int newMaxMonsters = 10 + getLevel();
-        if (monsters.size() > newMaxMonsters) {
-            monsters = monsters.subList(0, newMaxMonsters);
+    /**
+     * Vérifie si la configuration du joueur est invalide.
+     */
+    public void checkConfiguration() {
+        if (monsters.size() > getMaxMonstersForLevel()) {
+            throw new RuntimeException("The size of the monsters array is bigger than allowed");
         }
     }
 
-    public void increaseNecessaryExpForLevelUp() {
-        int xpForNextLevel = (int) (50 * Math.pow(1.1, getLevel() - 1));
-        setExp(xpForNextLevel);
+    /**
+     * Retourne le nombre maximum de monstres autorisés en fonction du niveau.
+     */
+    public int getMaxMonstersForLevel() {
+        return 10 + level;
     }
 
+    /**
+     * Réduit la liste des monstres si elle dépasse la taille maximale autorisée.
+     */
+    public void increaseMonstersMaxSize() {
+        int maxSize = getMaxMonstersForLevel();
+        if (monsters.size() > maxSize) {
+            monsters = monsters.subList(0, maxSize);
+        }
+    }
 
+    /**
+     * Met à jour l'XP nécessaire pour le prochain niveau.
+     */
+    public void updateXpForNextLevel() {
+        this.xpForNextLevel = calculateXpForNextLevel(level);
+    }
+
+    /**
+     * Calcule l'XP requis pour atteindre le prochain niveau.
+     */
+    private int calculateXpForNextLevel(int level) {
+        return (int) (50 * Math.pow(1.1, level));
+    }
 
     @Override
     public String toString() {
         return "PlayerModel{" +
                 "id='" + id + '\'' +
-                "name='" + name + '\'' +
+                ", name='" + name + '\'' +
                 ", level=" + level +
                 ", exp=" + exp +
-                ", curr_exp=" + curr_exp +
+                ", xpForNextLevel=" + xpForNextLevel +
                 ", monsters=" + monsters +
                 '}';
     }
