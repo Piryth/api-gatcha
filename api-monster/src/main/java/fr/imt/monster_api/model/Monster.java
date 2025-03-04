@@ -9,10 +9,10 @@ import org.springframework.data.mongodb.core.mapping.*;
 
 import java.util.List;
 
-@Document
 @Getter
 @Setter
 @ToString
+@Document(collection = "monster")
 public class Monster {
 
     @Id

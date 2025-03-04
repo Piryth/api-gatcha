@@ -27,35 +27,35 @@ services:
     healthcheck:
       test: echo "curl --fail --silent localhost:8761/actuator/health | grep UP || exit 1"
 
-  auth-api:
-    build:
-      dockerfile: ./api-auth/Dockerfile
-    container_name: auth-api
-    ports:
-      - "8080:8080"
-    links:
-      - mongodb-gatcha
-    restart: on-failure
-    depends_on:
-      mongodb-gatcha:
-        condition: service_healthy
-      discovery-server:
-        condition: service_healthy
-
-  player-api:
-    build:
-      dockerfile: ./api-player/Dockerfile
-    container_name: player-api
-    ports:
-      - "8081:8080"
-    links:
-      - mongodb-gatcha
-    restart: on-failure
-    depends_on:
-      mongodb-gatcha:
-        condition: service_healthy
-      discovery-server:
-        condition: service_healthy
+#  auth-api:
+#    build:
+#      dockerfile: ./api-auth/Dockerfile
+#    container_name: auth-api
+#    ports:
+#      - "8080:8080"
+#    links:
+#      - mongodb-gatcha
+#    restart: on-failure
+#    depends_on:
+#      mongodb-gatcha:
+#        condition: service_healthy
+#      discovery-server:
+#        condition: service_healthy
+#
+#  player-api:
+#    build:
+#      dockerfile: ./api-player/Dockerfile
+#    container_name: player-api
+#    ports:
+#      - "8081:8080"
+#    links:
+#      - mongodb-gatcha
+#    restart: on-failure
+#    depends_on:
+#      mongodb-gatcha:
+#        condition: service_healthy
+#      discovery-server:
+#        condition: service_healthy
 
   invocation-api:
     build:
@@ -87,6 +87,19 @@ services:
       discovery-server:
         condition: service_healthy
 
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - "./prometheus.yml:/etc/prometheus/prometheus.yml"
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana-oss
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
 
 volumes:
   mongodb-gatcha:
