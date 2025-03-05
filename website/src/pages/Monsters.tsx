@@ -83,22 +83,22 @@ export function Monsters() {
     },
     {
       accessorKey: 'hp',
-      header: 'HP',
+      header: 'Points de vie',
       cell: ({ row }) => <div>{row.getValue('hp')}</div>,
     },
     {
       accessorKey: 'atk',
-      header: 'ATK',
+      header: 'Attaque',
       cell: ({ row }) => <div>{row.getValue('atk')}</div>,
     },
     {
       accessorKey: 'def',
-      header: 'DEF',
+      header: 'Défense',
       cell: ({ row }) => <div>{row.getValue('def')}</div>,
     },
     {
       accessorKey: 'vit',
-      header: 'VIT',
+      header: 'Vitesse',
       cell: ({ row }) => <div>{row.getValue('vit')}</div>,
     },
     {
