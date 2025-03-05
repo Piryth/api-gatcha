@@ -1,7 +1,8 @@
 [
   {
+    "name": "Fire Elemental",
     "element": "FIRE",
-    "hp": 1200,
+    "hp": 1250,
     "atk": 450,
     "def": 300,
     "vit": 85,
@@ -40,6 +41,7 @@
     "lootRate": 0.3
   },
   {
+    "name": "Wind Elemental",
     "element": "WIND",
     "hp": 1500,
     "atk": 200,
@@ -80,8 +82,9 @@
     "lootRate": 0.3
   },
   {
+    "name": "Water Elemental",
     "element": "WATER",
-    "hp": 2500,
+    "hp": 1500,
     "atk": 150,
     "def": 200,
     "vit": 70,
@@ -120,8 +123,9 @@
     "lootRate": 0.3
   },
   {
-    "element": "WATER",
-    "hp": 1200,
+    "name": "Earth Elemental",
+    "element": "EARTH",
+    "hp": 2500,
     "atk": 550,
     "def": 350,
     "vit": 80,

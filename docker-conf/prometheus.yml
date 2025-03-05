@@ -8,4 +8,4 @@ scrape_configs:
     metrics_path: '/actuator/prometheus'
     scrape_interval: 15s # This can be adjusted based on our needs
     static_configs:
-      - targets: ['monster-api:8080', 'invocation-api:8080']
+      - targets: ['monster-api:8080', 'invocation-api:8080', 'player-api:8080', 'discovery-server:8761']

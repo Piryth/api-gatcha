@@ -11,3 +11,11 @@ spring:
       authentication-database: admin
 token:
   expiration: 1000
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

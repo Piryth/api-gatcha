@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Document(collection = "players")
+@Document(collection = "player")
 public class PlayerModel {
 
     @Id

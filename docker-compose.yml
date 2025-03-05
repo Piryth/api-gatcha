@@ -2,11 +2,11 @@ services:
   mongodb-gatcha:
     image: mongo
     container_name: mongodb-gatcha
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+    env_file: "./docker-conf/mongodb/docker.env"
     volumes:
-      - mongodb-gatcha:/data/db
+      - "./docker-conf/mongodb/init/:/docker-entrypoint-initdb.d"
+      - "./docker-conf/mongodb/seed:/seed"
+      - "mongodb-gatcha:/data/db"
     expose:
       - 27017
     ports:
@@ -41,21 +41,21 @@ services:
 #        condition: service_healthy
 #      discovery-server:
 #        condition: service_healthy
-#
-#  player-api:
-#    build:
-#      dockerfile: ./api-player/Dockerfile
-#    container_name: player-api
-#    ports:
-#      - "8081:8080"
-#    links:
-#      - mongodb-gatcha
-#    restart: on-failure
-#    depends_on:
-#      mongodb-gatcha:
-#        condition: service_healthy
-#      discovery-server:
-#        condition: service_healthy
+
+  player-api:
+    build:
+      dockerfile: ./api-player/Dockerfile
+    container_name: player-api
+    ports:
+      - "8081:8080"
+    links:
+      - mongodb-gatcha
+    restart: on-failure
+    depends_on:
+      mongodb-gatcha:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
 
   invocation-api:
     build:
@@ -90,7 +90,7 @@ services:
   prometheus:
     image: prom/prometheus
     volumes:
-      - "./prometheus.yml:/etc/prometheus/prometheus.yml"
+      - "./docker-conf/prometheus.yml:/etc/prometheus/prometheus.yml"
     ports:
       - "9090:9090"
 
