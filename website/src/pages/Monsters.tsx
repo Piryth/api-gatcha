@@ -26,11 +26,12 @@ import { z } from 'zod';
 import { addExpSchema, newPlayerSchema } from '@/lib/zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { ElementType, ENUM_ELEMENT } from '@/types/ElementType';
 
 export type Monster = {
   id: string;
   name: string;
-  element: string;
+  element: ElementType;
   hp: number;
   atk: number;
   def: number;
@@ -59,25 +60,6 @@ export function Monsters() {
   React.useEffect(() => {
     fetchMonsters();
   }, []);
-
-  function getFrenchName(element: string) {
-    switch (element) {
-      case 'FIRE':
-        return 'Feu';
-      case 'WATER':
-        return 'Eau';
-      case 'EARTH':
-        return 'Terre';
-      case 'WIND':
-        return 'Vent';
-      case 'LIGHT':
-        return 'Lumière';
-      case 'DARK':
-        return 'Ténèbres';
-      default:
-        return 'Inconnu';
-    }
-  }
 
   async function fetchMonsters() {
     try {
@@ -125,7 +107,10 @@ export function Monsters() {
     {
       accessorKey: 'element',
       header: 'Element',
-      cell: ({ row }) => <div>{getFrenchName(row.getValue('element'))}</div>,
+      cell: ({ row }) => {
+        const elementKey = row.getValue('element') as keyof typeof ENUM_ELEMENT;
+        return <div>{ENUM_ELEMENT[elementKey] || elementKey}</div>;
+      },
     },
     {
       accessorKey: 'hp',
