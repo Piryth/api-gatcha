@@ -59,6 +59,25 @@ export function Monsters() {
     fetchMonsters();
   }, []);
 
+  function getFrenchName(element: string) {
+    switch (element) {
+      case 'FIRE':
+        return 'Feu';
+      case 'WATER':
+        return 'Eau';
+      case 'EARTH':
+        return 'Terre';
+      case 'WIND':
+        return 'Vent';
+      case 'LIGHT':
+        return 'Lumière';
+      case 'DARK':
+        return 'Ténèbres';
+      default:
+        return 'Inconnu';
+    }
+  }
+
   async function fetchMonsters() {
     try {
       const response = await fetch('http://localhost:8080/monsters');
@@ -79,7 +98,7 @@ export function Monsters() {
     {
       accessorKey: 'element',
       header: 'Element',
-      cell: ({ row }) => <div>{row.getValue('element')}</div>,
+      cell: ({ row }) => <div>{getFrenchName(row.getValue('element'))}</div>,
     },
     {
       accessorKey: 'hp',
