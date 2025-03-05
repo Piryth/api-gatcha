@@ -18,6 +18,9 @@ public class Monster {
     @Id
     private String id;
 
+    @NotNull
+    private String name;
+
     @Enumerated(EnumType.STRING)
     @NotNull
     private ElementType element;
