@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "resolveJsonModule": true,
+    "composite": true,
+    "jsx": "react-jsx",
+    "esModuleInterop": true // Meilleure compatibilité avec CommonJS et ES Modules
+  }
+}
