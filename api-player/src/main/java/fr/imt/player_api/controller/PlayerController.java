@@ -1,5 +1,6 @@
 package fr.imt.player_api.controller;
 
+import fr.imt.player_api.dto.GainExperienceRequestDto;
 import fr.imt.player_api.model.PlayerModel;
 import fr.imt.player_api.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +30,8 @@ public class PlayerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<PlayerModel>> getPlayer(@PathVariable String id){
-        Optional<PlayerModel> player = playerService.getPlayer(id);
+    public ResponseEntity<PlayerModel> getPlayer(@PathVariable String id){
+        PlayerModel player = playerService.getPlayer(id);
         return ResponseEntity.ok(player);
     }
 
@@ -53,15 +54,15 @@ public class PlayerController {
     }
 
     @PostMapping("/{id}/gainExp")
-    public ResponseEntity<PlayerModel> gainExp(@PathVariable String id, @RequestBody int exp) {
-        PlayerModel player = playerService.gainExp(id, exp);
+    public ResponseEntity<PlayerModel> gainExp(@PathVariable String id, @RequestBody GainExperienceRequestDto gainExperienceRequestDto) {
+        PlayerModel player = playerService.gainExp(id, gainExperienceRequestDto.experience());
         return ResponseEntity.ok(player);
     }
 
     //Lister les monstres du joueur
     @GetMapping("/{id}/listMonsters")
-    public ResponseEntity<List<Object>> listMonstersOfPlayer(@PathVariable String id) {
-        List<Object> monsters = playerService.listMonstersOfPlayer(id);
+    public ResponseEntity<List<String>> listMonstersOfPlayer(@PathVariable String id) {
+        List<String> monsters = playerService.listMonstersOfPlayer(id);
         return ResponseEntity.ok(monsters);
     }
 
