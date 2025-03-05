@@ -26,7 +26,6 @@ public class Monster {
     private ElementType element;
 
     @NotNull
-    @JsonIgnore
     @DefaultValue("0")
     private int level;
 

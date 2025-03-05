@@ -44,6 +44,7 @@ export type Monster = {
       percent: number;
     };
   };
+  level: number;
 };
 
 export function Monsters() {
@@ -89,6 +90,32 @@ export function Monsters() {
     }
   }
 
+  async function deleteMonster(monsterId: String) {
+    try {
+      await fetch(`http://localhost:8080/monsters/${monsterId}`, {
+        method: 'delete',
+      });
+      const monsterName = monsters.find((m) => m.id == monsterId)?.name;
+      toast.success(`Monstre ${monsterName} supprimé avec succès`);
+      setMonsters(monsters.filter((m) => m.id != monsterId));
+    } catch (error) {
+      toast.error("Erreur lors de la suppression d'un monstre :", error);
+    }
+  }
+
+  async function levelUp(monsterId: String) {
+    try {
+      await fetch(`http://localhost:8080/monsters/${monsterId}/levelUp`, {
+        method: 'put',
+      });
+      await fetchMonsters();
+      const monsterName = monsters.find((m) => m.id == monsterId)?.name;
+      toast.success(`Monstre ${monsterName} amélioré avec succès`);
+    } catch (error) {
+      toast.error("Erreur lors de la suppression d'un monstre :", error);
+    }
+  }
+
   const columns: ColumnDef<Monster>[] = [
     {
       accessorKey: 'name',
@@ -121,6 +148,11 @@ export function Monsters() {
       cell: ({ row }) => <div>{row.getValue('vit')}</div>,
     },
     {
+      accessorKey: 'level',
+      header: 'Niveau',
+      cell: ({ row }) => <div>{row.getValue('level')}</div>,
+    },
+    {
       id: 'actions',
       enableHiding: false,
       header: 'Actions',
@@ -138,9 +170,12 @@ export function Monsters() {
               <DropdownMenuItem className='flex gap-4' onClick={() => navigator.clipboard.writeText(monster.id)}>
                 <Copy className='w-4 h-4' /> Copier l'ID du monstre
               </DropdownMenuItem>
-              {/* <DropdownMenuItem className='flex gap-4 text-red-700 hover:!text-red-700' onClick={() => deleteMonster(monster.id)}>
+              <DropdownMenuItem className='flex gap-4' onClick={() => levelUp(monster.id)}>
+                <ArrowUpCircleIcon className='w-4 h-4' /> Améliorer le monstre
+              </DropdownMenuItem>
+              <DropdownMenuItem className='flex gap-4 text-red-700 hover:!text-red-700' onClick={() => deleteMonster(monster.id)}>
                 <Trash className='w-4 h-4' /> Supprimer le monstre
-              </DropdownMenuItem> */}
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         );
