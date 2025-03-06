@@ -14,6 +14,13 @@ spring:
     discovery:
       enabled: true
     gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:5173"
+            allowedMethods:
+              - GET
+            allowedHeaders: "*"
       discovery:
         locator:
           enabled: true
@@ -28,6 +35,13 @@ spring:
           uri: lb://api-player
           predicates:
             - Path=/player-api/v1/players/**
+          filters:
+            - AuthenticationFilter
+
+        - id: api-monster
+          uri: lb://api-monster
+          predicates:
+            - Path=/monster-api/v1/monsters/**
           filters:
             - AuthenticationFilter
   main:

@@ -56,7 +56,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
             return this.onError(exchange, "Authorization header not found", HttpStatus.UNAUTHORIZED);
         }
         // Extracting header
-        String authHeaders = Objects.requireNonNull(exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION)).getFirst();
+        String authHeaders = Objects.requireNonNull(exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION)).get(0);
         if (authHeaders != null && authHeaders.startsWith("Bearer ")) {
             String token = authHeaders.substring(7);
             return this.validate(exchange, chain, token);
