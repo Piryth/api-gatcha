@@ -33,7 +33,7 @@ public class Monster {
     @NotNull
     @JsonIgnore
     @DefaultValue("0")
-    private final int upgradePoints;
+    private int upgradePoints;
 
     @NotNull
     private final double hp;
