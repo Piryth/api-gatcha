@@ -18,12 +18,14 @@ public class Monster {
     @Id
     private String id;
 
+    @NotNull
+    private String name;
+
     @Enumerated(EnumType.STRING)
     @NotNull
     private ElementType element;
 
     @NotNull
-    @JsonIgnore
     @DefaultValue("0")
     private int level;
 

@@ -11,7 +11,14 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
+<<<<<<< HEAD
 @RequestMapping("/monster-api/v1/monsters")
+||||||| c007667
+@RequestMapping("/monsters")
+=======
+@CrossOrigin(origins = "http://localhost:5173")
+@RequestMapping("/monsters")
+>>>>>>> 892b410aadf66d2f708dcf113889699802c71c80
 public class MonsterController {
 
     private final MonsterService monsterService;

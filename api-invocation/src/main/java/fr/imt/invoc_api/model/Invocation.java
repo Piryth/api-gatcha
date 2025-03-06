@@ -16,6 +16,7 @@ public class Invocation {
 
     @Id
     String id;
+    String name;
     Type element;
     float hp;
     float atk;
