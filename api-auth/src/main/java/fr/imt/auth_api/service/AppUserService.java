@@ -30,7 +30,7 @@ public class AppUserService {
      * @return An authentication response containing the token
      */
     public AuthenticationResponseDto register(RegisterRequestDto registerRequestDto) {
-        appUserRepository.findAppUserByUsername(registerRequestDto.username()).ifPresent(_ -> {
+        appUserRepository.findAppUserByUsername(registerRequestDto.username()).ifPresent(user -> {
             throw new UserAlreadyExistsException("An user with same email or username already exists.");
         });
 
