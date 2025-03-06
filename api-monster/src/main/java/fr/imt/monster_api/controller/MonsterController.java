@@ -12,7 +12,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/monster-api/v1/monsters")
-@CrossOrigin(origins = "http://localhost:5173")
 public class MonsterController {
 
     private final MonsterService monsterService;
