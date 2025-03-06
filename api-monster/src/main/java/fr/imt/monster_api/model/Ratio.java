@@ -4,17 +4,17 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.Value;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
-@Getter
-@Setter
+@Value
 @ToString
 public class Ratio {
 
     @NotNull
-    private Stat stat;
+    Stat stat;
 
     @NotNull
-    private int percent;
+    int percent;
 }

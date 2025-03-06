@@ -3,15 +3,12 @@ package fr.imt.monster_api.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.DefaultValue;
-import lombok.Getter;
+import lombok.Data;
 import lombok.Setter;
-import lombok.ToString;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
-@Getter
-@Setter
-@ToString
+@Data
 public class Skill {
 
     @NotNull
