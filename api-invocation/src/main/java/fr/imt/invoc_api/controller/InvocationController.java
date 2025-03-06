@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/invocations")
+@RequestMapping("/invocation-api/v1/invocations")
 public class InvocationController {
 
     private final InvocationService invocationService;

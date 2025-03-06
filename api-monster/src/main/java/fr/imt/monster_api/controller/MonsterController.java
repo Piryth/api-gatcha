@@ -11,7 +11,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/monsters")
+@RequestMapping("/monster-api/v1/monsters")
 public class MonsterController {
 
     private final MonsterService monsterService;
