@@ -1,14 +1,13 @@
-package fr.api.gateway.configuration;
+package fr.imt.gateway.configuration;
 
-import fr.api.gateway.exception.JwtTokenMalformedException;
-import fr.api.gateway.service.JwtService;
+import fr.imt.gateway.exception.JwtTokenMalformedException;
+import fr.imt.gateway.service.JwtService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;

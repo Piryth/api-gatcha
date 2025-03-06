@@ -33,7 +33,25 @@ Before getting started, make sure you have installed the following:
       ```
     - Ensure that ports and credentials are correctly set according to your environment.
 
-3. **Start the project with Docker**
+3. **Generate the public & private keys**
+   ```sh
+   # create key pair
+   openssl genrsa -out keypair.pem 2048
+
+   # extract public key
+   openssl rsa -in keypair.pem -pubout -out public.pem
+   
+   # extract private key
+   openssl pkcs8 -in keypair.pem -topk8 -nocrypt -inform PEM -outform PEM -out private.pem
+   ```
+
+4. **Set the docker secrets**
+   ```sh
+   docker secret create private_key ./private_key.pem
+   docker secret create public_key ./public_key.pem
+   ```
+
+5. **Start the project with Docker**
    ```sh
    docker compose -f "docker-compose.yml" up -d
    ```
@@ -42,7 +60,7 @@ Before getting started, make sure you have installed the following:
     - Start all microservices (backend and frontend)
     - Start the MongoDB database
 
-4. **Verify proper functioning**
+6. **Verify proper functioning**
     - Access the Prometheus monitoring server at [http://localhost:9090](http://localhost:9090)
     - Access the Grafana dashboard at [http://localhost:3000](http://localhost:3000)
     - Access the frontend at [http://localhost:5173](http://localhost:5173) (depending on your configuration)

@@ -1,4 +1,4 @@
-package fr.api.gateway.exception;
+package fr.imt.gateway.exception;
 
 public class JwtTokenMalformedException extends RuntimeException{
 

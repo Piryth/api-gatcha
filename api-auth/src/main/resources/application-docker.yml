@@ -9,8 +9,12 @@ spring:
       username: root
       password: example
       authentication-database: admin
-token:
-  expiration: 1000
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    preferIpAddress: true
 management:
   endpoints:
     web:

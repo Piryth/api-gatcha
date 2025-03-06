@@ -27,20 +27,36 @@ services:
     healthcheck:
       test: echo "curl --fail --silent localhost:8761/actuator/health | grep UP || exit 1"
 
-#  auth-api:
-#    build:
-#      dockerfile: ./api-auth/Dockerfile
-#    container_name: auth-api
-#    ports:
-#      - "8080:8080"
-#    links:
-#      - mongodb-gatcha
-#    restart: on-failure
-#    depends_on:
-#      mongodb-gatcha:
-#        condition: service_healthy
-#      discovery-server:
-#        condition: service_healthy
+  gateway-api:
+    build:
+      dockerfile: ./api-gateway/Dockerfile
+    container_name: gateway-api
+    environment:
+      JWT_PUBLIC_KEY_PATH: "/run/secrets/public_key"
+    ports:
+      - "8888:8888"
+    links:
+      - mongodb-gatcha
+    restart: on-failure
+    healthcheck:
+      test: echo "curl --fail --silent localhost:8761/actuator/health | grep UP || exit 1"
+
+  auth-api:
+    build:
+      dockerfile: ./api-auth/Dockerfile
+    container_name: auth-api
+    environment:
+      JWT_PRIVATE_KEY_PATH: "/run/secrets/private_key"
+    ports:
+      - "8080:8080"
+    links:
+      - mongodb-gatcha
+    restart: on-failure
+    depends_on:
+      mongodb-gatcha:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
 
   player-api:
     build:

@@ -1,4 +1,4 @@
-package fr.api.gateway.configuration;
+package fr.imt.gateway.configuration;
 
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;

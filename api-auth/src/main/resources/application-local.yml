@@ -1,16 +1,16 @@
+server:
+  port: 8080
 spring:
   application:
-    name: api-player
-  # MongoDB
+    name: api-authentication
   data:
     mongodb:
       host: localhost
-      port: 27017
-      database: playerAPI
-
-server:
-  port: 8081
-
+      database: api_auth
+      port: 27019
+      username: root
+      password: example
+      authentication-database: admin
 eureka:
   client:
     serviceUrl:

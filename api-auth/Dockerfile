@@ -17,4 +17,4 @@ COPY --from=build /workspace/api-auth/target/*.jar app.jar
 
 EXPOSE 8080/tcp
 
-ENTRYPOINT ["java", "-Dspring.profiles.active=docker", "-jar", "./app.jar"]
+ENTRYPOINT ["java", "-Dspring.profiles.active=docker", "-Drun.arguments=--jwt.private.file=$JWT_PRIVATE_KEY_PATH", "-jar", "./app.jar"]

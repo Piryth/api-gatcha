@@ -1,22 +1,20 @@
-package fr.api.gateway.service;
+package fr.imt.gateway.service;
 
-import fr.api.gateway.exception.JwtTokenMalformedException;
-import fr.api.gateway.exception.JwtTokenMissingException;
+import fr.imt.gateway.exception.JwtTokenMalformedException;
+import fr.imt.gateway.exception.JwtTokenMissingException;
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import javax.crypto.SecretKey;
+import java.security.PublicKey;
 
 @Service
+@RequiredArgsConstructor
 public class JwtService {
 
-    @Value("${jwt-secret}")
-    private String secretKey;
+    private PublicKey jwtPublicKey;
 
     /**
      * Validates a token
@@ -27,7 +25,7 @@ public class JwtService {
      */
     public Mono<Void> validateToken(final String token) throws JwtTokenMalformedException, JwtTokenMissingException {
         try {
-            Jwts.parser().verifyWith(getSignInKey()).build().parseSignedClaims(token);
+            Jwts.parser().verifyWith(jwtPublicKey).build().parseSignedClaims(token);
             return Mono.empty();
         } catch (MalformedJwtException ex) {
             return Mono.error(new JwtTokenMalformedException("Invalid JWT token"));
@@ -40,11 +38,6 @@ public class JwtService {
         } catch (SignatureException ex) {
             return Mono.error(new JwtTokenMalformedException("Jwt signature does not match"));
         }
-    }
-
-    private SecretKey getSignInKey() {
-        byte[] keyByte = Decoders.BASE64.decode(secretKey);
-        return Keys.hmacShaKeyFor(keyByte);
     }
 
 }
