@@ -28,7 +28,6 @@
         <module>api-invocation</module>
         <module>api-monster</module>
         <module>api-gateway</module>
-        <module>core</module>
     </modules>
     <scm>
         <connection/>
@@ -108,11 +107,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
 
         <dependency>
