@@ -26,7 +26,7 @@ class MonsterServiceTest {
 
     @Test
     void getAllMonsters_ShouldReturnList() {
-        when(monsterRepository.findAll()).thenReturn(List.of(Monster.builder().build(), Monster.builder().build()));
+        when(monsterRepository.findAll()).thenReturn(List.of(new Monster(), new Monster()));
 
         List<Monster> monsters = monsterService.getAllMonsters();
 
@@ -35,7 +35,7 @@ class MonsterServiceTest {
 
     @Test
     void getMonsterById_Found_ShouldReturnMonster() {
-        Monster monster = Monster.builder().build();
+        Monster monster = new Monster();
         monster.setId("123");
         when(monsterRepository.findById("123")).thenReturn(Optional.of(monster));
 
@@ -56,7 +56,7 @@ class MonsterServiceTest {
 
     @Test
     void addMonster_ShouldSaveAndReturnMonster() {
-        Monster monster = Monster.builder().build();
+        Monster monster = new Monster();
         when(monsterRepository.save(monster)).thenReturn(monster);
 
         Monster savedMonster = monsterService.addMonster(monster);
@@ -67,7 +67,7 @@ class MonsterServiceTest {
 
     @Test
     void updateMonster_Valid_ShouldSave() {
-        Monster monster = Monster.builder().build();
+        Monster monster = new Monster();
         monster.setId("123");
 
         monsterService.updateMonster(monster);
@@ -77,7 +77,7 @@ class MonsterServiceTest {
 
     @Test
     void updateMonster_Invalid_ShouldThrowException() {
-        Monster monster = Monster.builder().build();
+        Monster monster = new Monster();
         monster.setSkills(List.of(new Skill(), new Skill(), new Skill(), new Skill()));
 
         assertThrows(IllegalArgumentException.class, () -> monsterService.updateMonster(monster));
@@ -94,7 +94,7 @@ class MonsterServiceTest {
 
     @Test
     void levelUpMonster_Found_ShouldIncreaseLevel() {
-        Monster monster = Monster.builder().build();
+        Monster monster = new Monster();
         monster.setId("123");
         monster.setLevel(5);
 

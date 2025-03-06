@@ -76,7 +76,7 @@ export function Monsters() {
 
   async function fetchMonsters() {
     try {
-      const response = await fetch('http://localhost:8082/monster-api/v1/monsters');
+      const response = await fetch('http://localhost:8888/monster-api/v1/monsters');
       const data = await response.json();
       setMonsters(data);
       toast.success('Monstres récupérés avec succès');
@@ -87,7 +87,7 @@ export function Monsters() {
 
   async function deleteMonster(monsterId: String) {
     try {
-      await fetch(`http://localhost:8082/monster-api/v1/monsters/${monsterId}`, {
+      await fetch(`http://localhost:8888/monster-api/v1/monsters/${monsterId}`, {
         method: 'delete',
       });
       const monsterName = monsters.find((m) => m.id == monsterId)?.name;
@@ -100,7 +100,7 @@ export function Monsters() {
 
   async function levelUp(monsterId: String) {
     try {
-      await fetch(`http://localhost:8082/monster-api/v1/monsters/${monsterId}/levelUp`, {
+      await fetch(`http://localhost:8888/monster-api/v1/monsters/${monsterId}/levelUp`, {
         method: 'put',
       });
       await fetchMonsters();

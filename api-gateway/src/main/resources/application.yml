@@ -12,19 +12,18 @@ spring:
     name: api-gateway
   cloud:
     discovery:
-      enabled: true
+      locator:
+        enabled: true
     gateway:
       globalcors:
         corsConfigurations:
           '[/**]':
             allowedOrigins: "http://localhost:5173"
-            allowedMethods:
-              - GET
+            allowedMethods: "*"
             allowedHeaders: "*"
       discovery:
-        locator:
-          enabled: true
-          lower-case-service-id: true
+        enabled: true
+        lower-case-service-id: true
       routes:
         - id: api-authentication
           uri: lb://api-authentication
@@ -34,25 +33,45 @@ spring:
         - id: api-player
           uri: lb://api-player
           predicates:
-            - Path=/player-api/v1/players/**
+            - Path=/players/**
           filters:
             - AuthenticationFilter
+            - RewritePath=/players/(?<remaining>.*), /player-api/v1/players/${remaining}
 
-        - id: api-monster
-          uri: lb://api-monster
+        - id: monster-api
+          uri: lb://monster-api
           predicates:
-            - Path=/monster-api/v1/monsters/**
+            - Path=/monsters/**
           filters:
             - AuthenticationFilter
+            - RewritePath=/monsters/(?<remaining>.*), /monster-api/v1/monsters/${remaining}
+
+        - id: api-invocation
+          uri: lb://api-invocation
+          predicates:
+            - Path=/invocations/**
+          filters:
+            - AuthenticationFilter
+            - RewritePath=/invocations/(?<remaining>.*), /invocation-api/v1/invocations/${remaining}
+
+        - id: block-all
+          uri: "no://op"
+          predicates:
+            - Path=/**
+          filters:
+            - name: SetStatus
+              args:
+                status: 404
   main:
     web-application-type: reactive
 
 eureka:
   client:
     serviceUrl:
-      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+      defaultZone: http://localhost:8761/eureka
   instance:
     preferIpAddress: true
+    hostname: localhost
 
 management:
   endpoint:
@@ -62,4 +81,6 @@ management:
     web:
       exposure:
         include: health, gateway
+
 jwt-secret: c5c7ffea56396c52c79aba78e3837c49637226a92f4dd4053fa55bd429249705f066a316696401a7c2ceef3b87011ae65855d2d6b39adda98be1d6f0abff0e77d269e6a2e63dcddf1069805ba3f4f9e6c63b136d50b3a5939fc4242931d02eeccdc692577543fa51a23d33d800fa1051947e0fc669dcd1243e974e6e081747d77f06347e4ab50e7deca3ac1a77e52a755ecbbe47574c675dad44feb7aa3fe1db2bab6a6dbfa15a34e96cab2e628b8a6f44c792f0917163f5ae32b190d1ef03177728bcf5abc788c4309b159ab999a3c68b577911924f496b1b84941b4729cf7808b38350e032269c9ec7729b527e76082c216e766853e6bb01c5456679e0c065
+
