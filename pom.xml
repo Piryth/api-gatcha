@@ -27,6 +27,7 @@
         <module>api-player</module>
         <module>api-invocation</module>
         <module>api-monster</module>
+        <module>api-combat</module>
     </modules>
     <scm>
         <connection/>
