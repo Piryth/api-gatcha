@@ -10,9 +10,10 @@ import org.springframework.data.mongodb.core.mapping.*;
 import java.util.List;
 
 @Document
-@Getter
-@Setter
+@Builder
+@Data
 @ToString
+@AllArgsConstructor
 public class Monster {
 
     @Id
@@ -20,7 +21,7 @@ public class Monster {
 
     @Enumerated(EnumType.STRING)
     @NotNull
-    private ElementType element;
+    private final ElementType element;
 
     @NotNull
     @JsonIgnore
@@ -30,21 +31,21 @@ public class Monster {
     @NotNull
     @JsonIgnore
     @DefaultValue("0")
-    private int upgradePoints;
+    private final int upgradePoints;
 
     @NotNull
-    private double hp;
+    private final double hp;
 
     @NotNull
-    private double atk;
+    private final double atk;
 
     @NotNull
-    private double def;
+    private final double def;
 
     @NotNull
-    private int vit;
+    private final int vit;
 
-@NotNull
-@Size(max = 3)
+    @NotNull
+    @Size(max = 3)
     private List<Skill> skills;
 }
