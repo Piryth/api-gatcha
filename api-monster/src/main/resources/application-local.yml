@@ -1,6 +1,21 @@
+server:
+  port: 8082
+
 spring:
   application:
-    name: monster-api
+    name: api-monster
   data:
     mongodb:
-      uri: "mongodb://localhost:27017/monster-api"
+      host: localhost
+      database: api_monster
+      port: 27019
+      username: root
+      password: azerty
+      authentication-database: admin
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    preferIpAddress: true

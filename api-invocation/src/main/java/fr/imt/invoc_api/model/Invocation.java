@@ -8,7 +8,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Value
-@Getter
 @Builder
 @AllArgsConstructor
 @Document(collection = "invocation")
@@ -16,6 +15,7 @@ public class Invocation {
 
     @Id
     String id;
+    String name;
     Type element;
     float hp;
     float atk;

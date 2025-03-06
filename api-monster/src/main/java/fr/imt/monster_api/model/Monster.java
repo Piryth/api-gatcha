@@ -9,21 +9,23 @@ import org.springframework.data.mongodb.core.mapping.*;
 
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @ToString
+@NoArgsConstructor
 @Document(collection = "monster")
 public class Monster {
 
     @Id
     private String id;
 
+    @NotNull
+    private String name;
+
     @Enumerated(EnumType.STRING)
     @NotNull
     private ElementType element;
 
     @NotNull
-    @JsonIgnore
     @DefaultValue("0")
     private int level;
 
@@ -44,7 +46,7 @@ public class Monster {
     @NotNull
     private int vit;
 
-@NotNull
-@Size(max = 3)
+    @NotNull
+    @Size(max = 3)
     private List<Skill> skills;
 }

@@ -13,7 +13,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { ArrowUpCircleIcon, Copy, MoreHorizontal, Plus, RefreshCw, Trash, X } from 'lucide-react';
+import { ArrowUpCircleIcon, Copy, MoreHorizontal, Plus, RefreshCw, Trash } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -69,7 +69,7 @@ export function Players() {
 
   async function fetchPlayers() {
     try {
-      const response = await fetch('http://localhost:8081/api/players/list');
+      const response = await fetch('http://localhost:8888/players/list');
       const data = await response.json();
       setPlayers(data);
       toast.success('Joueurs récupérés avec succès');
@@ -80,7 +80,7 @@ export function Players() {
 
   async function deletePlayer(playerId: String) {
     try {
-      await fetch(`http://localhost:8081/api/players/${playerId}`, {
+      await fetch(`http://localhost:8888/players/${playerId}`, {
         method: 'delete',
       });
       const playerName = players.find((p) => p.id == playerId)?.name;
@@ -93,7 +93,7 @@ export function Players() {
 
   async function levelUp(playerId: String) {
     try {
-      await fetch(`http://localhost:8081/api/players/${playerId}/levelUp`);
+      await fetch(`http://localhost:8888/players/${playerId}/levelUp`);
       await fetchPlayers();
       const playerName = players.find((p) => p.id == playerId)?.name;
       toast.success(`Joueur ${playerName} amélioré avec succès`);
@@ -103,9 +103,8 @@ export function Players() {
   }
 
   async function createNewPlayer(values: z.infer<typeof newPlayerSchema>) {
-    console.log('a');
     try {
-      await fetch(`http://localhost:8081/api/players/new`, {
+      await fetch(`http://localhost:8888/players/new`, {
         method: 'post',
         body: JSON.stringify(values),
         headers: {
@@ -125,7 +124,7 @@ export function Players() {
     try {
       const player = players.find((p) => p.id == values.id);
       delete values.id;
-      await fetch(`http://localhost:8081/api/players/${player.id}/gainExp`, {
+      await fetch(`http://localhost:8888/players/${player.id}/gainExp`, {
         method: 'post',
         body: JSON.stringify(values),
         headers: {

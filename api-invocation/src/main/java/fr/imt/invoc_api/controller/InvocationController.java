@@ -27,7 +27,7 @@ public class InvocationController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/list")
     public ResponseEntity<List<Invocation>> getInvocations() {
         try {
             return ResponseEntity.ok(invocationService.getInvocations());
@@ -41,7 +41,7 @@ public class InvocationController {
         return invocationService.createAllInvocations(invocations);
     }
 
-    @DeleteMapping("/")
+    @DeleteMapping("/delete")
     public ResponseEntity<Void> deleteAllInvocations() {
         invocationService.deleteAllInvocations();
         return ResponseEntity.ok().build();

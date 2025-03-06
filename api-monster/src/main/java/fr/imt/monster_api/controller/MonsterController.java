@@ -21,7 +21,7 @@ public class MonsterController {
     }
 
     // Récupérer tous les monstres
-    @GetMapping
+    @GetMapping("/list")
     public ResponseEntity<List<Monster>> getAllMonsters() {
         List<Monster> monsters = monsterService.getAllMonsters();
         return ResponseEntity.ok(monsters);
@@ -35,7 +35,7 @@ public class MonsterController {
     }
 
     // Ajouter un monstre
-    @PostMapping
+    @PostMapping("/new")
     public ResponseEntity<Monster> addMonster(@RequestBody Monster monster) {
         try {
             Monster savedMonster = monsterService.addMonster(monster);

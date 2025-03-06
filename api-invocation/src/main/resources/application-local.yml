@@ -1,3 +1,5 @@
+server:
+  port: 8083
 spring:
   application:
     name: api-invocation
@@ -9,3 +11,9 @@ spring:
       username: root
       password: azerty
       authentication-database: admin
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    preferIpAddress: true
