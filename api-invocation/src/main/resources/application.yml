@@ -1,15 +1,15 @@
 spring:
   application:
-    name: api-player
+    name: api-invocation
   # MongoDB
   data:
     mongodb:
       host: localhost
       port: 27017
-      database: playerAPI
+      database: api_invocation
 
 server:
-  port: 8081
+  port: 8083
 
 eureka:
   client:

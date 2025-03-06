@@ -38,8 +38,8 @@ spring:
             - AuthenticationFilter
             - RewritePath=/players/(?<remaining>.*), /player-api/v1/players/${remaining}
 
-        - id: monster-api
-          uri: lb://monster-api
+        - id: api-monster
+          uri: lb://api-monster
           predicates:
             - Path=/monsters/**
           filters:
