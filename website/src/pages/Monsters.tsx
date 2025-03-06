@@ -23,10 +23,11 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import { z } from 'zod';
-import { addExpSchema, newPlayerSchema } from '@/lib/zod';
+import { addExpSchema, newMonsterSchema, newPlayerSchema } from '@/lib/zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ElementType, ENUM_ELEMENT } from '@/types/ElementType';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export type Monster = {
   id: string;
@@ -56,6 +57,18 @@ export function Monsters() {
   const [rowSelection, setRowSelection] = React.useState({});
 
   const [open, setOpen] = React.useState(false);
+
+  const form = useForm<z.infer<typeof newMonsterSchema>>({
+    resolver: zodResolver(newMonsterSchema),
+    defaultValues: {
+      name: '',
+      hp: '0',
+      atk: '0',
+      def: '0',
+      vit: '0',
+      element: '',
+    },
+  });
 
   React.useEffect(() => {
     fetchMonsters();
@@ -95,6 +108,24 @@ export function Monsters() {
       toast.success(`Monstre ${monsterName} amélioré avec succès`);
     } catch (error) {
       toast.error("Erreur lors de la suppression d'un monstre :", error);
+    }
+  }
+
+  async function createMonster(values: z.infer<typeof newMonsterSchema>) {
+    try {
+      await fetch('http://localhost:8080/monsters', {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
+      await fetchMonsters();
+      setOpen(false);
+      form.reset();
+      toast.success(`Monstre ${values.name} créé avec succès`);
+    } catch (error) {
+      toast.error('Erreur lors de la création du monstre :', error);
     }
   }
 
@@ -216,8 +247,8 @@ export function Monsters() {
               <DialogTitle>Création d'un nouveau monstre</DialogTitle>
               <DialogDescription>Vous pouvez créer un monstre dans cette interface.</DialogDescription>
             </DialogHeader>
-            {/* <Form {...form}>
-              <form onSubmit={form.handleSubmit(createNewPlayer)} className='space-y-8'>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(createMonster)} className='space-y-8'>
                 <FormField
                   control={form.control}
                   name='name'
@@ -225,16 +256,100 @@ export function Monsters() {
                     <FormItem>
                       <FormLabel>Nom</FormLabel>
                       <FormControl>
-                        <Input placeholder='monstre 1' {...field} />
+                        <Input placeholder='Bigfoot' {...field} />
                       </FormControl>
                       <FormDescription>Le nom visible de votre monstre</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+                <div className='grid grid-cols-2 gap-8'>
+                  <FormField
+                    control={form.control}
+                    name='hp'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Points de vie</FormLabel>
+                        <FormControl>
+                          <Input type='number' placeholder='100' {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name='atk'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Attaque</FormLabel>
+                        <FormControl>
+                          <Input type='number' placeholder='100' {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className='grid grid-cols-2 gap-8'>
+                  <FormField
+                    control={form.control}
+                    name='def'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Défense</FormLabel>
+                        <FormControl>
+                          <Input type='number' placeholder='100' {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name='vit'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Vitesse</FormLabel>
+                        <FormControl>
+                          <Input type='number' placeholder='100' {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <FormField
+                  control={form.control}
+                  name='element'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Element</FormLabel>
+                      <FormControl>
+                        <Select {...field} onValueChange={field.onChange} value={field.value}>
+                          <SelectTrigger>
+                            <SelectValue placeholder='Element' />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {Object.entries(ENUM_ELEMENT).map(([key, value]) => (
+                              <SelectItem key={key} value={key}>
+                                {value}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 <Button type='submit'>Enregistrer</Button>
               </form>
-            </Form> */}
+            </Form>
           </DialogContent>
         </Dialog>
       </div>
