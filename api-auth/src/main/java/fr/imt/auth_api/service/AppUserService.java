@@ -1,19 +1,16 @@
 package fr.imt.auth_api.service;
 
 import fr.imt.auth_api.domain.AppUser;
+import fr.imt.auth_api.dto.AuthenticationResponseDto;
 import fr.imt.auth_api.dto.AppUserDto;
 import fr.imt.auth_api.repository.AppUserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +18,7 @@ import java.util.Optional;
 public class AppUserService implements UserDetailsService {
 
     private final AppUserRepository appUserRepository;
+    private final JwtService jwtService;
 
     /**
      * @param username the username identifying the user whose data is required.
@@ -29,42 +27,44 @@ public class AppUserService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<AppUser> optUser = appUserRepository.findAppUserByUsername(username);
-        log.info("User {} found", optUser.toString());
         return appUserRepository.findAppUserByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found : " + username));
     }
 
-    public AppUserDto getAuthenticatedUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        AppUser user = appUserRepository.findAppUserByUsername(username).orElseThrow();
-        return new AppUserDto(username, user.getEmail(), null);
+    /**
+     * Registers a user to the DB and generates a token
+     * @param appUserDto    An appUser, with email, username and password
+     * @return              An authentication response containing the token
+     */
+    public AuthenticationResponseDto register(AppUserDto appUserDto) {
+        AppUser user = AppUser.builder()
+                .username(appUserDto.username())
+                .email(appUserDto.email())
+                .password(new BCryptPasswordEncoder().encode(appUserDto.password()))
+                .role("USER")
+                .build();
+
+        appUserRepository.save(user);
+        // Token generation
+        String jwtToken = jwtService.generateToken(user);
+
+        return AuthenticationResponseDto.builder()
+                .token(jwtToken)
+                .build();
     }
 
     /**
-     * Retrives the authenticated user and updates its credentials
-     *
-     * @param userDto user
-     * @return userDto user
+     * Generates token given a created user
+     * @param appUserDto a user
+     * @return a generated token
      */
-    public AppUserDto updateAuthenticatedUser(AppUserDto userDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        AppUser user = appUserRepository.findAppUserByUsername(username).orElseThrow(
-                () -> new UsernameNotFoundException("User not found"));
-        user.setUsername(userDto.username());
-        user.setEmail(userDto.email());
-        System.out.println(new BCryptPasswordEncoder().encode(userDto.password()));
-        user.setPassword(new BCryptPasswordEncoder().encode(userDto.password()));
-        appUserRepository.save(user);
-        return userDto;
+    public AuthenticationResponseDto logIn(AppUserDto appUserDto) {
+        AppUser user = appUserRepository.findAppUserByUsername(appUserDto.username()).orElseThrow( () -> new UsernameNotFoundException("User not found"));
+        // Token generation
+        String jwtToken = jwtService.generateToken(user);
+
+        return AuthenticationResponseDto.builder()
+                .token(jwtToken)
+                .build();
     }
 
-    public boolean deleteAuthenticatedUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        AppUser user = appUserRepository.findAppUserByUsername(username).orElseThrow();
-        appUserRepository.delete(user);
-        return true;
-    }
 }

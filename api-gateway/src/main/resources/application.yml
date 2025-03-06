@@ -1,6 +1,11 @@
 server:
   port: 8888
   shutdown: graceful
+  error:
+    include-exception: false
+    include-path: never
+    include-stacktrace: never
+    include-binding-errors: never
 
 spring:
   application:
