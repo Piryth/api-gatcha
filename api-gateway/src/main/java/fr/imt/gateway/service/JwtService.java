@@ -14,7 +14,7 @@ import java.security.PublicKey;
 @RequiredArgsConstructor
 public class JwtService {
 
-    private PublicKey jwtPublicKey;
+    private final PublicKey jwtPublicKey;
 
     /**
      * Validates a token
