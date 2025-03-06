@@ -12,7 +12,7 @@ The project consists of the following microservices:
 - **Invocation API**: Manages gatcha summons.
 - **Monster API**: Stores and retrieves monster data.
 - **Combat API**: Handles battle mechanics and combat logic.
-
+- 
 ## Prerequisites
 Before getting started, make sure you have installed the following:
 - [Docker](https://www.docker.com/get-started)
