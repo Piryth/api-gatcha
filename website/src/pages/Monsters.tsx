@@ -113,7 +113,7 @@ export function Monsters() {
 
   async function createMonster(values: z.infer<typeof newMonsterSchema>) {
     try {
-      await fetch('http://localhost:8082/monster-api/v1/monsters', {
+      await fetch('http://localhost:8888/monster-api/v1/monsters', {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
