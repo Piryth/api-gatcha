@@ -43,10 +43,10 @@ public class InvocationServiceTest {
     @Test
     void getRandomInvocationReturnsInvocationWhenListIsNotEmpty() {
         List<Invocation> invocations = Arrays.asList(
-                new Invocation("1", Type.WATER, 0, 0, 0, 0, null, 0.3f),
-                new Invocation("2", Type.FIRE, 0, 0, 0, 0, null, 0.3f),
-                new Invocation("3", Type.EARTH, 0, 0, 0, 0, null, 0.3f),
-                new Invocation("4", Type.WIND, 0, 0, 0, 0, null, 0.1f)
+                new Invocation("1", "", Type.WATER, 0, 0, 0, 0, null, 0.3f),
+                new Invocation("2", "", Type.FIRE, 0, 0, 0, 0, null, 0.3f),
+                new Invocation("3", "", Type.EARTH, 0, 0, 0, 0, null, 0.3f),
+                new Invocation("4", "", Type.WIND, 0, 0, 0, 0, null, 0.1f)
         );
         when(invocationRepository.findAll()).thenReturn(invocations);
 
@@ -59,10 +59,10 @@ public class InvocationServiceTest {
     @Test
     void getRandomInvocationReturnsInvocationBasedOnLootRates() {
         List<Invocation> invocations = Arrays.asList(
-                new Invocation("1", Type.WATER, 0, 0, 0, 0, null, 0.4f),
-                new Invocation("2", Type.FIRE, 0, 0, 0, 0, null, 0.3f),
-                new Invocation("3", Type.EARTH, 0, 0, 0, 0, null, 0.2f),
-                new Invocation("4", Type.WIND, 0, 0, 0, 0, null, 0.1f)
+                new Invocation("1", "", Type.WATER, 0, 0, 0, 0, null, 0.4f),
+                new Invocation("2", "", Type.FIRE, 0, 0, 0, 0, null, 0.3f),
+                new Invocation("3", "", Type.EARTH, 0, 0, 0, 0, null, 0.2f),
+                new Invocation("4", "", Type.WIND, 0, 0, 0, 0, null, 0.1f)
         );
         when(invocationRepository.findAll()).thenReturn(invocations);
 
@@ -100,8 +100,8 @@ public class InvocationServiceTest {
     @Test
     void getInvocationsReturnsAllInvocations() {
         List<Invocation> invocations = Arrays.asList(
-                new Invocation("1", Type.WATER, 0, 0, 0, 0, null, 0.3f),
-                new Invocation("2", Type.FIRE, 0, 0, 0, 0, null, 0.3f)
+                new Invocation("1", "", Type.WATER, 0, 0, 0, 0, null, 0.3f),
+                new Invocation("2", "", Type.FIRE, 0, 0, 0, 0, null, 0.3f)
         );
         when(invocationRepository.findAll()).thenReturn(invocations);
 
@@ -113,10 +113,10 @@ public class InvocationServiceTest {
     @Test
     void createAllInvocationsSavesAndReturnsAllInvocations() {
         List<Invocation> invocations = Arrays.asList(
-                new Invocation("1", Type.WATER, 0, 0, 0, 0, null, 0.3f),
-                new Invocation("2", Type.FIRE, 0, 0, 0, 0, null, 0.3f),
-                new Invocation("3", Type.FIRE, 0, 0, 0, 0, null, 0.3f),
-                new Invocation("4", Type.FIRE, 0, 0, 0, 0, null, 0.1f)
+                new Invocation("1", "", Type.WATER, 0, 0, 0, 0, null, 0.3f),
+                new Invocation("2", "", Type.FIRE, 0, 0, 0, 0, null, 0.3f),
+                new Invocation("3", "", Type.FIRE, 0, 0, 0, 0, null, 0.3f),
+                new Invocation("4", "", Type.FIRE, 0, 0, 0, 0, null, 0.1f)
         );
         when(invocationRepository.saveAll(invocations)).thenReturn(invocations);
 
@@ -128,10 +128,10 @@ public class InvocationServiceTest {
     @Test
     void createAllInvocationsThrowsIllegalArgumentExceptionWhenSumIsNotOne() {
         List<Invocation> invocations = Arrays.asList(
-                new Invocation("1", Type.WATER, 0, 0, 0, 0, null, 0.3f),
-                new Invocation("2", Type.FIRE, 0, 0, 0, 0, null, 0.3f),
-                new Invocation("3", Type.FIRE, 0, 0, 0, 0, null, 0.3f),
-                new Invocation("4", Type.FIRE, 0, 0, 0, 0, null, 0.2f)
+                new Invocation("1", "", Type.WATER, 0, 0, 0, 0, null, 0.3f),
+                new Invocation("2", "", Type.FIRE, 0, 0, 0, 0, null, 0.3f),
+                new Invocation("3", "", Type.FIRE, 0, 0, 0, 0, null, 0.3f),
+                new Invocation("4", "", Type.FIRE, 0, 0, 0, 0, null, 0.2f)
         );
 
         assertThrows(IllegalArgumentException.class, () -> invocationService.createAllInvocations(invocations));
