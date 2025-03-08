@@ -1,10 +1,12 @@
 # Gatcha Game API Project
 
 ## Description
-This project involves setting up a Gatcha-type game using a microservices architecture. The backend is built with **Spring Boot**, and the frontend is developed using **Vite**. The entire project is containerized with **Docker** and utilizes a **MongoDB** database.
+This project involves setting up a Gatcha-type game using a microservice architecture. The backend is built with **Spring Boot**, and the frontend is developed using **Vite**. The entire project is containerized with **Docker** and utilizes a **MongoDB** database.
 
-### Microservices Architecture
+### Microservices
+
 The project consists of the following microservices:
+
 - **Discovery Server**: Service registry for managing microservices.
 - **API Gateway**: Centralized entry point for routing requests.
 - **Authentication API**: Manages user authentication and authorization.
@@ -12,7 +14,7 @@ The project consists of the following microservices:
 - **Invocation API**: Manages gatcha summons.
 - **Monster API**: Stores and retrieves monster data.
 - **Combat API**: Handles battle mechanics and combat logic.
-- 
+
 ## Prerequisites
 Before getting started, make sure you have installed the following:
 - [Docker](https://www.docker.com/get-started)
@@ -20,51 +22,49 @@ Before getting started, make sure you have installed the following:
 - [Java 23](https://www.oracle.com/fr/java/technologies/downloads/)
 
 ## Installation
-1. **Clone the Git repository**
-   ```sh
-   git clone https://github.com/your-repository/gatcha-game.git
-   cd gatcha-game
-   ```
 
-2. **Environment configuration**
-    - Copy the `.env.example` file to `.env` and modify the variables if necessary:
-      ```sh
-      cp .env.example .env
-      ```
-    - Ensure that ports and credentials are correctly set according to your environment.
+### 1. **Clone the Git repository**
 
-3. **Generate the public & private keys**
-   ```sh
-   # create key pair
-   openssl genrsa -out keypair.pem 2048
+```sh
+git clone https://github.com/Piryth/api-gatcha.git
+cd api-gatcha
+```
 
-   # extract public key
-   openssl rsa -in keypair.pem -pubout -out public.pem
-   
-   # extract private key
-   openssl pkcs8 -in keypair.pem -topk8 -nocrypt -inform PEM -outform PEM -out private.pem
-   ```
+### 2. **Generate the public & private keys for local environment**
 
-4. **Set the docker secrets**
-   ```sh
-   docker secret create private_key ./private_key.pem
-   docker secret create public_key ./public_key.pem
-   ```
+```sh
+# create key pair
+openssl genrsa -out keypair.pem 2048
 
-5. **Start the project with Docker**
-   ```sh
-   docker compose -f "docker-compose.yml" up -d
-   ```
-   This command will:
-    - Build and start the Docker containers
-    - Start all microservices (backend and frontend)
-    - Start the MongoDB database
+# extract public key
+openssl rsa -in keypair.pem -pubout -out ./api-gateway/src/main/ressources/certs/jwt_public.pem
 
-6. **Verify proper functioning**
-    - Access the Prometheus monitoring server at [http://localhost:9090](http://localhost:9090)
-    - Access the Grafana dashboard at [http://localhost:3000](http://localhost:3000)
-    - Access the frontend at [http://localhost:5173](http://localhost:5173) (depending on your configuration)
-    - Access the API Gateway at [http://localhost:8888](http://localhost:8888)
+# extract private key
+openssl pkcs8 -in keypair.pem -topk8 -nocrypt -inform PEM -outform PEM -out ./api-auth/src/main/ressources/certs/jwt_private.pem
+```
+
+**Note 1:** The private key is used by the Authentication API to sign the JWT token, while the public key is used by the API Gateway or any other service that needs it to verify the JWT token.
+
+**Note 2:** When running from docker containers, the keys are generated automatically by the openssl-keygen image. If you want to use new keys, simply rebuild the image.
+
+### 3. **Start the project with Docker**
+
+```sh
+docker compose -f "docker-compose.yml" up -d
+```
+
+**This command will:**
+
+- Build and start the Docker containers
+- Start all microservices (backend and frontend)
+- Start the MongoDB database
+
+### 4. **Verify proper functioning**
+
+- Access the frontend at [http://localhost:5173](http://localhost:5173) (depending on your configuration)
+- Access the API Gateway at [http://localhost:8888](http://localhost:8888)
+- Access the Prometheus monitoring server at [http://localhost:9090](http://localhost:9090)
+- Access the Grafana dashboard at [http://localhost:3000](http://localhost:3000)
 
 ## Project Structure
 ```
@@ -95,24 +95,22 @@ Before getting started, make sure you have installed the following:
 │   └── README.md
 ├── docker-conf/
 │   ├── mongodb/
+│   ├── openssl/
 │   ├── prometheus.yml
 ├── docker-compose.yml
 ├── .gitignore
 ├── README.md
 └── pom.xml
-
-19 directories, 22 files
-
 ```
 
 ## Database
-- MongoDB is used as the main database.
-- The MongoDB database is seeded with players and invocations on startup.
-- MongoDB collections can be initialized with JSON files available in `db/`.
-- MongoDB is used as the main database.
-- MongoDB collections can be initialized with JSON files available in `db/`.
+
+- We use MongoDB as the main database for this project.
+- It is seeded with players and invocations on startup.
+- MongoDB collections can be initialized with JSON files available in `docker-conf/mongodb/seed`.
 
 ## Authors
+
 - [@CHAMPEIX_Cédric](https://github.com/cedric-champeix)
 - [@DELASSUS_Félix](https://github.com/DelassusFelix)
 - [@ENDIGNOUS_Arnaud](https://github.com/Piryth)
