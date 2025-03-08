@@ -1,4 +1,10 @@
 services:
+  openssl-keygen:
+    build:
+      dockerfile: ./docker-conf/openssl/Dockerfile
+    image: openssl-keygen:latest
+    container_name: openssl-keygen
+
   mongodb-gatcha:
     image: mongo
     container_name: mongodb-gatcha
@@ -19,22 +25,6 @@ services:
     build:
       dockerfile: ./discovery-server/Dockerfile
     container_name: discovery-server
-    ports:
-      - "8761:8761"
-    links:
-      - mongodb-gatcha
-    restart: on-failure
-    healthcheck:
-      test: echo "curl --fail --silent localhost:8761/actuator/health | grep UP || exit 1"
-
-  gateway-api:
-    build:
-      dockerfile: ./api-gateway/Dockerfile
-    container_name: gateway-api
-    environment:
-      JWT_PUBLIC_KEY_PATH: "/run/secrets/public_key"
-    ports:
-      - "8888:8888"
     links:
       - mongodb-gatcha
     restart: on-failure
@@ -44,26 +34,43 @@ services:
   auth-api:
     build:
       dockerfile: ./api-auth/Dockerfile
+      args:
+        PRIVATE_KEY_PATH: "/openssl/certs/private/private.pem"
     container_name: auth-api
-    environment:
-      JWT_PRIVATE_KEY_PATH: "/run/secrets/private_key"
-    ports:
-      - "8080:8080"
     links:
       - mongodb-gatcha
     restart: on-failure
+    healthcheck:
+      test: echo "curl --fail --silent localhost:8080/actuator/health | grep UP || exit 1"
     depends_on:
+      openssl-keygen:
+        condition: service_completed_successfully
       mongodb-gatcha:
         condition: service_healthy
       discovery-server:
+        condition: service_healthy
+
+  gateway-api:
+    build:
+      dockerfile: ./api-gateway/Dockerfile
+      args:
+        PUBLIC_KEY_PATH: "/openssl/certs/public/public.pem"
+    container_name: gateway-api
+    ports:
+      - "8888:8888"
+    links:
+      - mongodb-gatcha
+    restart: on-failure
+    healthcheck:
+      test: echo "curl --fail --silent localhost:8761/actuator/health | grep UP || exit 1"
+    depends_on:
+      auth-api:
         condition: service_healthy
 
   player-api:
     build:
       dockerfile: ./api-player/Dockerfile
     container_name: player-api
-    ports:
-      - "8081:8080"
     links:
       - mongodb-gatcha
     restart: on-failure
@@ -77,8 +84,6 @@ services:
     build:
       dockerfile: ./api-invocation/Dockerfile
     container_name: invocation-api
-    ports:
-      - "8082:8080"
     links:
       - mongodb-gatcha
     restart: on-failure
@@ -92,8 +97,6 @@ services:
     build:
       dockerfile: ./api-monster/Dockerfile
     container_name: monster-api
-    ports:
-      - "8083:8080"
     links:
       - mongodb-gatcha
     restart: on-failure

@@ -1,6 +1,8 @@
+server:
+  port: 8080
 spring:
   application:
-    name: api-auth
+    name: api-authentication
   data:
     mongodb:
       host: mongodb-gatcha
@@ -12,7 +14,7 @@ spring:
 eureka:
   client:
     serviceUrl:
-      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+      defaultZone: ${EUREKA_URI:http://discovery-server:8761/eureka}
   instance:
     preferIpAddress: true
 management:
@@ -23,3 +25,6 @@ management:
   endpoint:
     health:
       show-details: always
+jwt:
+  private:
+    file: certs/private.pem

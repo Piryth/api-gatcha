@@ -1,4 +1,4 @@
-FROM maven:3.9.9-amazoncorretto-23-alpine as build
+FROM maven:3.9.9-amazoncorretto-23-alpine AS build
 LABEL authors="champeic"
 
 RUN mkdir -p /workspace

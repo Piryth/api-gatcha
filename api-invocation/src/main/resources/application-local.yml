@@ -9,7 +9,7 @@ spring:
       database: api_invocation
       port: 27019
       username: root
-      password: azerty
+      password: example
       authentication-database: admin
 eureka:
   client:

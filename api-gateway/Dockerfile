@@ -1,10 +1,14 @@
-FROM maven:3.9.9-amazoncorretto-23-alpine as build
+FROM maven:3.9.9-amazoncorretto-23-alpine AS build
 LABEL authors="champeic"
+
+ARG PUBLIC_KEY_PATH
 
 RUN mkdir -p /workspace
 WORKDIR /workspace
 
 COPY . .
+
+COPY --from=openssl-keygen:latest ${PUBLIC_KEY_PATH} /workspace/api-gateway/src/main/resources/certs/public.pem
 
 RUN mvn -pl api-gateway clean package -DskipTests
 
@@ -17,4 +21,4 @@ COPY --from=build /workspace/api-gateway/target/*.jar app.jar
 
 EXPOSE 8888/tcp
 
-ENTRYPOINT ["java", "-Dspring.profiles.active=docker", "-Drun.arguments=--jwt.public.file=$JWT_PUBLIC_KEY_PATH", "-jar", "./app.jar"]
+ENTRYPOINT ["java", "-Dspring.profiles.active=docker", "-jar", "./app.jar"]
