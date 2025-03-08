@@ -1,0 +1,14 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: combat-api
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: api_combat
+      authentication-database: admin
+      username: root
+      password: example

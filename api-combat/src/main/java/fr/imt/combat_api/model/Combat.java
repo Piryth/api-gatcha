@@ -1,9 +1,7 @@
 package fr.imt.combat_api.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-import jakarta.ws.rs.DefaultValue;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.*;
 
@@ -19,10 +17,11 @@ public class Combat {
     private String id;
 
     @NotNull
-    private List<String> monsters;
+    private List<String> monsterIds;
 
     @NotNull
     private List<Round> rounds;
 
-
+    @NotNull
+    private String winner;
 }
