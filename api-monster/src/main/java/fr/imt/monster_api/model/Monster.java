@@ -1,10 +1,13 @@
 package fr.imt.monster_api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-import jakarta.ws.rs.DefaultValue;
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.*;
 
 import java.util.List;
@@ -21,17 +24,16 @@ public class Monster {
     @NotNull
     private String name;
 
-    @Enumerated(EnumType.STRING)
     @NotNull
     private ElementType element;
 
     @NotNull
-    @DefaultValue("0")
+    @JsonProperty(defaultValue = "0")
     private int level;
 
     @NotNull
     @JsonIgnore
-    @DefaultValue("0")
+    @JsonProperty(defaultValue = "0")
     private int upgradePoints;
 
     @NotNull

@@ -29,6 +29,7 @@ public class MonsterService {
 
     // Ajouter un monstre
     public Monster addMonster(Monster monster) {
+        monster.setLevel(0);
         return monsterRepository.save(monster);
     }
 
