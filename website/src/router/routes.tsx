@@ -21,6 +21,7 @@ const RootLayout = () => (
 export const Router = () => {
   return (
     <Routes>
+      {/* Routes publiques */}
       <Route
         path='/login'
         element={
@@ -37,6 +38,8 @@ export const Router = () => {
           </ProtectedRoute>
         }
       />
+
+      {/* Routes privées */}
       <Route
         path='/'
         element={

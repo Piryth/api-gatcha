@@ -23,7 +23,11 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     const getAuthUser = async () => {
       setLoading(true);
       try {
-        const userResponse = await fetch('http://localhost:8888/auth-api/v1/auth/me');
+        const userResponse = await fetch('http://localhost:8888/auth-api/v1/auth/me', {
+          headers: {
+            Authorization: `Bearer ${document.cookie.split('=')[1]}`,
+          },
+        });
         const userData = await userResponse.json();
         setAuthUser(userData);
       } catch (error) {

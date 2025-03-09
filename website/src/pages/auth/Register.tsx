@@ -37,9 +37,9 @@ export const Register = () => {
         body: JSON.stringify(values),
       });
       const data = await response.json();
-      document.cookie = `Bearer=${data.token}`;
-      setAuthUser(data.user);
+      document.cookie = `Bearer=${data.token}; path=/; SameSite=Lax`;
       toast.success('Account created successfuly');
+      setAuthUser(data.user);
       navigate('/');
     } catch (error) {
       toast.error(error);

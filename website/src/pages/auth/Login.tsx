@@ -20,7 +20,7 @@ export default function LoginPage() {
     },
   });
 
-  const { setAuthUser } = useAuthContext();
+  const { setAuthUser, authUser } = useAuthContext();
   const navigate = useNavigate();
 
   async function login(values: z.infer<typeof loginSchema>) {
@@ -33,10 +33,9 @@ export default function LoginPage() {
         body: JSON.stringify(values),
       });
       const data = await response.json();
-      document.cookie = `Bearer=${data.token}`;
+      document.cookie = `Bearer=${data.token}; path=/; SameSite=Lax`;
       toast.success('User connected successfuly');
       setAuthUser(data.user);
-      console.log(data.user);
       navigate('/');
     } catch (error) {
       toast.error(error);
