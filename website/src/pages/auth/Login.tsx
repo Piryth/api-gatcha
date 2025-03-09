@@ -6,8 +6,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { FileJson } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, redirect } from 'react-router-dom';
 import { z } from 'zod';
+import { toast } from 'sonner';
 
 export default function LoginPage() {
   const loginForm = useForm<z.infer<typeof loginSchema>>({
@@ -19,7 +20,21 @@ export default function LoginPage() {
   });
 
   async function login(values: z.infer<typeof loginSchema>) {
-    console.log(values);
+    try {
+      const response = await fetch('http://localhost:8888/auth-api/v1/auth/login', {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
+      const data = await response.json();
+      document.cookie = `apiGatchaToken=${data.token}`;
+      toast.success('User connected successfuly');
+      redirect('/');
+    } catch (error) {
+      toast.error(error);
+    }
   }
 
   return (
