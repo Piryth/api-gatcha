@@ -1,5 +1,6 @@
 package fr.imt.auth_api.controller;
 
+import fr.imt.auth_api.domain.AppUser;
 import fr.imt.auth_api.dto.AuthenticationResponseDto;
 import fr.imt.auth_api.dto.RegisterRequestDto;
 import fr.imt.auth_api.dto.LoginRequestDto;
@@ -32,5 +33,12 @@ public class AuthenticationController {
         log.info("Logging in user {}", loginRequestDto.username());
         return ResponseEntity.ok(appUserService.logIn(loginRequestDto));
     }
+
+    @GetMapping("me")
+    public ResponseEntity<AppUser> getConnectedUser(@RequestHeader("Authorization") String token) {
+        log.info("Fetching connected user");
+        return ResponseEntity.ok(appUserService.getConnectedUser(token));
+    }
+
 
 }

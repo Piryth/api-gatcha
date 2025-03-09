@@ -23,8 +23,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     const getAuthUser = async () => {
       setLoading(true);
       try {
-        //TODO
-        const userResponse = await fetch('/auth/me');
+        const userResponse = await fetch('http://localhost:8888/auth-api/v1/auth/me');
         const userData = await userResponse.json();
         setAuthUser(userData);
       } catch (error) {

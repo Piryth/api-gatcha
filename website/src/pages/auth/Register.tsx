@@ -5,10 +5,11 @@ import { registerSchema } from '@/lib/zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FileJson } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import { Link, redirect } from 'react-router-dom';
+import { Link, redirect, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
+import { useAuthContext } from '@/contexts/authContext';
 
 export const Register = () => {
   const registerForm = useForm<z.infer<typeof registerSchema>>({
@@ -20,6 +21,9 @@ export const Register = () => {
       confirmPassword: '',
     },
   });
+
+  const { setAuthUser } = useAuthContext();
+  const navigate = useNavigate();
 
   async function register(values: z.infer<typeof registerSchema>) {
     delete values.confirmPassword;
@@ -33,9 +37,10 @@ export const Register = () => {
         body: JSON.stringify(values),
       });
       const data = await response.json();
-      document.cookie = `apiGatchaToken=${data.token}`;
+      document.cookie = `Bearer=${data.token}`;
+      setAuthUser(data.user);
       toast.success('Account created successfuly');
-      redirect('/');
+      navigate('/');
     } catch (error) {
       toast.error(error);
     }

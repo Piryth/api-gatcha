@@ -6,9 +6,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { FileJson } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
-import { Link, redirect } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { toast } from 'sonner';
+import { useAuthContext } from '@/contexts/authContext';
 
 export default function LoginPage() {
   const loginForm = useForm<z.infer<typeof loginSchema>>({
@@ -18,6 +19,9 @@ export default function LoginPage() {
       password: '',
     },
   });
+
+  const { setAuthUser } = useAuthContext();
+  const navigate = useNavigate();
 
   async function login(values: z.infer<typeof loginSchema>) {
     try {
@@ -29,9 +33,11 @@ export default function LoginPage() {
         body: JSON.stringify(values),
       });
       const data = await response.json();
-      document.cookie = `apiGatchaToken=${data.token}`;
+      document.cookie = `Bearer=${data.token}`;
       toast.success('User connected successfuly');
-      redirect('/');
+      setAuthUser(data.user);
+      console.log(data.user);
+      navigate('/');
     } catch (error) {
       toast.error(error);
     }

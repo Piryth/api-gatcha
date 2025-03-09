@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ThemeChanger } from './ThemeChanger';
 import { Briefcase, FileText, House, Menu, X, User, LogOut, Github } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
@@ -24,6 +24,7 @@ import { DropdownMenuShortcut } from '../ui/dropdown-menu';
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -37,7 +38,8 @@ export const Navbar = () => {
   }, [isOpen]);
 
   async function logout() {
-    console.log('logout');
+    document.cookie = 'Bearer=; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
+    navigate('/login');
   }
 
   const { authUser } = useAuthContext();
@@ -126,6 +128,23 @@ export const Navbar = () => {
             <Separator />
             <div className='flex gap-4 justify-center items-center '>
               <ThemeChanger />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant='outline' size='sm'>
+                    <User />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className='w-56 '>
+                  <DropdownMenuLabel>{authUser?.username}</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => logout()}>
+                    Se déconnecter
+                    <DropdownMenuShortcut>
+                      <LogOut className='w-4 h-4' />
+                    </DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
