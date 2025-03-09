@@ -5,6 +5,8 @@ import { Footer } from '@/components/Footer';
 import { Home } from '@/pages/Home';
 import { Monsters } from '@/pages/Monsters';
 import { Players } from '@/pages/Players';
+import LoginPage from '@/pages/auth/Login';
+import { Register } from '@/pages/auth/Register';
 
 const RootLayout = () => (
   <div className='flex flex-col min-h-screen'>
@@ -32,5 +34,13 @@ export const router = createBrowserRouter([
       { path: '/joueurs', element: <Players /> },
       { path: '/monstres', element: <Monsters /> },
     ],
+  },
+  {
+    path: '/login',
+    element: <LoginPage />,
+  },
+  {
+    path: '/register',
+    element: <Register />,
   },
 ]);
