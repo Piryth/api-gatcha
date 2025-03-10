@@ -26,6 +26,7 @@ import { z } from 'zod';
 import { addExpSchema, newPlayerSchema } from '@/lib/zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { axiosConfig } from '@/config/axiosConfig';
 
 export type Player = {
   id: string;
@@ -69,8 +70,8 @@ export function Players() {
 
   async function fetchPlayers() {
     try {
-      const response = await fetch('http://localhost:8888/players/list');
-      const data = await response.json();
+      const response = await axiosConfig.get('/players/list');
+      const data = await response.data;
       setPlayers(data);
       toast.success('Joueurs récupérés avec succès');
     } catch (error) {
@@ -80,9 +81,7 @@ export function Players() {
 
   async function deletePlayer(playerId: String) {
     try {
-      await fetch(`http://localhost:8888/players/${playerId}`, {
-        method: 'delete',
-      });
+      await axiosConfig.delete(`/players/${playerId}`);
       const playerName = players.find((p) => p.id == playerId)?.name;
       toast.success(`Joueur ${playerName} supprimé avec succès`);
       setPlayers(players.filter((p) => p.id != playerId));
@@ -93,7 +92,7 @@ export function Players() {
 
   async function levelUp(playerId: String) {
     try {
-      await fetch(`http://localhost:8888/players/${playerId}/levelUp`);
+      await axiosConfig.get(`/players/${playerId}/levelUp`);
       await fetchPlayers();
       const playerName = players.find((p) => p.id == playerId)?.name;
       toast.success(`Joueur ${playerName} amélioré avec succès`);
@@ -104,13 +103,7 @@ export function Players() {
 
   async function createNewPlayer(values: z.infer<typeof newPlayerSchema>) {
     try {
-      await fetch(`http://localhost:8888/players/new`, {
-        method: 'post',
-        body: JSON.stringify(values),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      await axiosConfig.post(`/players/new`, values);
       setOpen(false);
       form.reset();
       await fetchPlayers();
@@ -124,13 +117,7 @@ export function Players() {
     try {
       const player = players.find((p) => p.id == values.id);
       delete values.id;
-      await fetch(`http://localhost:8888/players/${player.id}/gainExp`, {
-        method: 'post',
-        body: JSON.stringify(values),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      await axiosConfig.post(`http://localhost:8888/players/${player.id}/gainExp`, values);
       setOpen2(false);
       formExp.reset();
       await fetchPlayers();

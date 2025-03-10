@@ -49,6 +49,7 @@ public class AppUserService {
 
         return AuthenticationResponseDto.builder()
                 .token(jwtToken)
+                .user(user)
                 .build();
     }
 
@@ -67,11 +68,20 @@ public class AppUserService {
             log.info("Logged in user {}", loginRequestDto.username());
             return AuthenticationResponseDto.builder()
                     .token(jwtToken)
+                    .user(user)
                     .build();
         }
         log.error("Invalid credentials");
         throw new BadCredentialsException("Incorrect username or password");
 
     }
+
+
+    public AppUser getConnectedUser(String token) {
+        token = token.trim();
+        String username = jwtService.extractUsername(token);
+        return appUserRepository.findAppUserByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
 
 }

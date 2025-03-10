@@ -1,14 +1,32 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ThemeChanger } from './ThemeChanger';
-import { Briefcase, FileText, House, Menu, X, User } from 'lucide-react';
+import { Briefcase, FileText, House, Menu, X, User, LogOut, Github } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '../ui/button';
 import { Separator } from '../ui/separator';
+import { useAuthContext } from '@/contexts/authContext';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuPortal,
+  DropdownMenuSubContent,
+} from '../ui/dropdown-menu';
+import { DropdownMenuShortcut } from '../ui/dropdown-menu';
+import { toast } from 'sonner';
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
+  const navigate = useNavigate();
+  const { authUser, setAuthUser } = useAuthContext();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -21,6 +39,13 @@ export const Navbar = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isOpen]);
 
+  async function logout() {
+    document.cookie = 'Bearer=; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
+    setAuthUser(null);
+    navigate('/login');
+    toast.success('Déconnexion réussie');
+  }
+
   return (
     <>
       <div className='navbar sticky top-0 left-0 bg-background dark:bg-background right-0 z-50 shadow-md shadow-primary'>
@@ -31,14 +56,41 @@ export const Navbar = () => {
           <div className='flex gap-4 items-center'>
             <div className='flex gap-2'>
               <Button asChild variant='link'>
-                <Link to='/joueurs'>Joueurs</Link>
+                <Link to='/players'>Joueurs</Link>
               </Button>
               <Button asChild variant='link'>
-                <Link to='/monstres'>Monstres</Link>
+                <Link to='/monsters'>Monstres</Link>
               </Button>
             </div>
             <Separator orientation='vertical' className='h-6' />
             <div className='flex gap-4 items-center justify-between'>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant='outline' size='sm'>
+                    <User />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className='w-56 '>
+                  <DropdownMenuLabel>Username : {authUser?.username}</DropdownMenuLabel>
+
+                  {/* <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <Link target='_blank' to={'https://github.com/Piryth/api-gatcha'}>
+                      Source code
+                    </Link>
+                    <DropdownMenuShortcut>
+                      <Github className='w-4 h-4' />
+                    </DropdownMenuShortcut>
+                  </DropdownMenuItem> */}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => logout()}>
+                    Se déconnecter
+                    <DropdownMenuShortcut>
+                      <LogOut className='w-4 h-4' />
+                    </DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
               <ThemeChanger />
             </div>
           </div>
@@ -64,13 +116,13 @@ export const Navbar = () => {
 
           <div className='flex flex-col gap-4 p-8 pt-2'>
             <Button asChild variant='link' className='flex gap-4 items-center justify-start' onClick={() => setIsOpen(!isOpen)}>
-              <Link to='/joueurs'>
+              <Link to='/players'>
                 <User className='w-4 h-4' />
                 Joueurs
               </Link>
             </Button>
             <Button asChild variant='link' className='flex gap-4 items-center justify-start' onClick={() => setIsOpen(!isOpen)}>
-              <Link to='/monstres'>
+              <Link to='/monsters'>
                 <Briefcase className='w-4 h-4' />
                 Monstres
               </Link>
@@ -78,6 +130,23 @@ export const Navbar = () => {
             <Separator />
             <div className='flex gap-4 justify-center items-center '>
               <ThemeChanger />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant='outline' size='sm'>
+                    <User />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className='w-56 '>
+                  <DropdownMenuLabel>{authUser?.username}</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => logout()}>
+                    Se déconnecter
+                    <DropdownMenuShortcut>
+                      <LogOut className='w-4 h-4' />
+                    </DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
