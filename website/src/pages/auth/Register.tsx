@@ -10,6 +10,7 @@ import { z } from 'zod';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { useAuthContext } from '@/contexts/authContext';
+import { axiosConfig } from '@/config/axiosConfig';
 
 export const Register = () => {
   const registerForm = useForm<z.infer<typeof registerSchema>>({
@@ -29,20 +30,14 @@ export const Register = () => {
     delete values.confirmPassword;
 
     try {
-      const response = await fetch('http://localhost:8888/auth-api/v1/auth/register', {
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(values),
-      });
-      const data = await response.json();
+      const response = await axiosConfig.post('/auth-api/v1/auth/register', values);
+      const data = await response.data;
       document.cookie = `Bearer=${data.token}; path=/; SameSite=Lax`;
       toast.success('Account created successfuly');
       setAuthUser(data.user);
       navigate('/');
     } catch (error) {
-      toast.error(error);
+      toast.error(error.response.data);
     }
   }
 

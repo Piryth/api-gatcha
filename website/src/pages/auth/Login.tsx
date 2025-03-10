@@ -8,8 +8,9 @@ import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
-import { toast } from 'sonner';
 import { useAuthContext } from '@/contexts/authContext';
+import { axiosConfig } from '@/config/axiosConfig';
+import { toast } from 'sonner';
 
 export default function LoginPage() {
   const loginForm = useForm<z.infer<typeof loginSchema>>({
@@ -20,25 +21,19 @@ export default function LoginPage() {
     },
   });
 
-  const { setAuthUser, authUser } = useAuthContext();
+  const { setAuthUser } = useAuthContext();
   const navigate = useNavigate();
 
   async function login(values: z.infer<typeof loginSchema>) {
     try {
-      const response = await fetch('http://localhost:8888/auth-api/v1/auth/login', {
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(values),
-      });
-      const data = await response.json();
+      const response = await axiosConfig.post('/auth-api/v1/auth/login', values);
+      const data = response.data;
       document.cookie = `Bearer=${data.token}; path=/; SameSite=Lax`;
-      toast.success('User connected successfuly');
+      toast.success('Utilisateur connecté avec succès');
       setAuthUser(data.user);
       navigate('/');
-    } catch (error) {
-      toast.error(error);
+    } catch (error: any) {
+      toast.error(error.response.data);
     }
   }
 

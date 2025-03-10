@@ -3,6 +3,7 @@ package fr.imt.auth_api.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -16,11 +17,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserAlreadyExistsException.class)
     public final ResponseEntity<String> handleRuntimeException(Exception exception) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exception.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
     }
 
     @ExceptionHandler(RuntimeException.class)
     public final ResponseEntity<String> handleRuntimeException() {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An internal error has occurred");
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public final ResponseEntity<String> handleUserNotFound() {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
     }
 }
