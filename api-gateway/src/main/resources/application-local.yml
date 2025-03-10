@@ -83,4 +83,4 @@ management:
         include: "*"
 jwt:
   public:
-    file: certs/jwt_public.pem
+    file: certs/jwt-public-key-example.pem
