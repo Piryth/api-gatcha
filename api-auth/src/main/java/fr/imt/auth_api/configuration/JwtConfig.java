@@ -1,5 +1,6 @@
 package fr.imt.auth_api.configuration;
 
+import fr.imt.auth_api.configuration.exceptions.NoJwtSecretFilePathException;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,7 +23,7 @@ public class JwtConfig {
     @Bean
     public PrivateKey jwtPrivateKey() throws Exception {
         if (jwtSecretFilePath == null) {
-            return null;
+            throw new NoJwtSecretFilePathException();
         }
 
         KeyFactory factory = KeyFactory.getInstance("RSA");

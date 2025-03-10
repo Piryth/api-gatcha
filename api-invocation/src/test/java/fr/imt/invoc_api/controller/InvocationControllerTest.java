@@ -34,7 +34,8 @@ class InvocationControllerTest {
 
     @Test
     void getInvocationReturnsRandomInvocation() {
-        Invocation invocation = new Invocation("1", "", null, 0, 0, 0, 0, null, 0.3f);
+        Invocation invocation = Invocation.builder().id("1").build();
+
         when(invocationService.getRandomInvocation()).thenReturn(invocation);
 
         Invocation result = invocationController.getInvocation().getBody();
@@ -54,8 +55,8 @@ class InvocationControllerTest {
     @Test
     void getInvocationsReturnsListOfInvocations() {
         List<Invocation> invocations = Arrays.asList(
-                new Invocation("1", "", null, 0, 0, 0, 0, null, 0.3f),
-                new Invocation("2", "", null, 0, 0, 0, 0, null, 0.3f)
+                Invocation.builder().id("1").build(),
+                Invocation.builder().id("2").build()
         );
         when(invocationService.getInvocations()).thenReturn(invocations);
 
@@ -67,10 +68,10 @@ class InvocationControllerTest {
     @Test
     void createAllInvocationsReturnsListOfCreatedInvocations() {
         List<Invocation> invocations = Arrays.asList(
-                new Invocation("1", "", null, 0, 0, 0, 0, null, 0.3f),
-                new Invocation("2", "", null, 0, 0, 0, 0, null, 0.3f),
-                new Invocation("3", "", null, 0, 0, 0, 0, null, 0.3f),
-                new Invocation("4", "", null, 0, 0, 0, 0, null, 0.3f)
+                Invocation.builder().id("1").lootRate(0.3f).build(),
+                Invocation.builder().id("2").lootRate(0.3f).build(),
+                Invocation.builder().id("3").lootRate(0.3f).build(),
+                Invocation.builder().id("4").lootRate(0.1f).build()
         );
         when(invocationService.createAllInvocations(invocations)).thenReturn(invocations);
 
