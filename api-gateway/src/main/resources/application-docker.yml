@@ -1,0 +1,87 @@
+server:
+  port: 8888
+  shutdown: graceful
+  error:
+    include-exception: false
+    include-path: never
+    include-stacktrace: never
+    include-binding-errors: never
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    discovery:
+      enabled: true
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:5173"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: api-authentication
+          uri: lb://api-authentication
+          predicates:
+            - Path=/auth-api/v1/auth/**
+
+        - id: api-player
+          uri: lb://api-player
+          predicates:
+            - Path=/players/**
+          filters:
+            - AuthenticationFilter
+            - RewritePath=/players/(?<remaining>.*), /player-api/v1/players/${remaining}
+
+        - id: api-monster
+          uri: lb://api-monster
+          predicates:
+            - Path=/monsters/**
+          filters:
+            - AuthenticationFilter
+            - RewritePath=/monsters/(?<remaining>.*), /monster-api/v1/monsters/${remaining}
+
+        - id: api-invocation
+          uri: lb://api-invocation
+          predicates:
+            - Path=/invocations/**
+          filters:
+            - AuthenticationFilter
+            - RewritePath=/invocations/(?<remaining>.*), /invocation-api/v1/invocations/${remaining}
+
+        - id: block-all
+          uri: "no://op"
+          predicates:
+            - Path=/**
+          filters:
+            - name: SetStatus
+              args:
+                status: 404
+  main:
+    web-application-type: reactive
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://discovery-server:8761/eureka}
+  instance:
+    preferIpAddress: true
+
+management:
+  endpoint:
+    gateway:
+      access: unrestricted
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+jwt:
+  public:
+    file: certs/public.pem

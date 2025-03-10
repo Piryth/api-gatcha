@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: api-invocation
+  data:
+    mongodb:
+      host: mongodb-gatcha
+      database: api_invocation
+      port: 27017
+      username: root
+      password: example
+      authentication-database: admin
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://discovery-server:8761/eureka}
+  instance:
+    preferIpAddress: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

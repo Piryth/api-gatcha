@@ -1,0 +1,18 @@
+[
+  {
+    "level": 1,
+    "exp": 50,
+    "curr_exp": 0,
+    "monsters": [],
+    "name": "Player-01",
+    "_class": "fr.imt.player_api.model.PlayerModel"
+  },
+  {
+    "level": 1,
+    "exp": 55,
+    "curr_exp": 0,
+    "monsters": [],
+    "name": "Player-02",
+    "_class": "fr.imt.player_api.model.PlayerModel"
+  }
+]

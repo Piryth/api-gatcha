@@ -1,0 +1,19 @@
+server:
+  port: 8083
+spring:
+  application:
+    name: api-invocation
+  data:
+    mongodb:
+      host: localhost
+      database: api_invocation
+      port: 27019
+      username: root
+      password: example
+      authentication-database: admin
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    preferIpAddress: true
