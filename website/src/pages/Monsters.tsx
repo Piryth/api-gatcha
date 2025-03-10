@@ -23,14 +23,16 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import { z } from 'zod';
-import { addExpSchema, newPlayerSchema } from '@/lib/zod';
+import { addExpSchema, newMonsterSchema, newPlayerSchema } from '@/lib/zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { ElementType, ENUM_ELEMENT } from '@/types/ElementType';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export type Monster = {
   id: string;
   name: string;
-  element: string;
+  element: ElementType;
   hp: number;
   atk: number;
   def: number;
@@ -44,6 +46,7 @@ export type Monster = {
       percent: number;
     };
   };
+  level: number;
 };
 
 export function Monsters() {
@@ -55,18 +58,74 @@ export function Monsters() {
 
   const [open, setOpen] = React.useState(false);
 
+  const form = useForm<z.infer<typeof newMonsterSchema>>({
+    resolver: zodResolver(newMonsterSchema),
+    defaultValues: {
+      name: '',
+      hp: '0',
+      atk: '0',
+      def: '0',
+      vit: '0',
+      element: '',
+    },
+  });
+
   React.useEffect(() => {
     fetchMonsters();
   }, []);
 
   async function fetchMonsters() {
     try {
-      const response = await fetch('http://localhost:8080/monsters');
+      const response = await fetch('http://localhost:8888/monsters/');
       const data = await response.json();
       setMonsters(data);
       toast.success('Monstres récupérés avec succès');
     } catch (error) {
       toast.error('Erreur lors de la récupération des monstres :', error);
+    }
+  }
+
+  async function deleteMonster(monsterId: String) {
+    try {
+      await fetch(`http://localhost:8888/monsters/${monsterId}`, {
+        method: 'delete',
+      });
+      const monsterName = monsters.find((m) => m.id == monsterId)?.name;
+      toast.success(`Monstre ${monsterName} supprimé avec succès`);
+      setMonsters(monsters.filter((m) => m.id != monsterId));
+    } catch (error) {
+      toast.error("Erreur lors de la suppression d'un monstre :", error);
+    }
+  }
+
+  async function levelUp(monsterId: String) {
+    try {
+      await fetch(`http://localhost:8888/monsters/${monsterId}/levelUp`, {
+        method: 'put',
+      });
+      await fetchMonsters();
+      const monsterName = monsters.find((m) => m.id == monsterId)?.name;
+      toast.success(`Monstre ${monsterName} amélioré avec succès`);
+    } catch (error) {
+      toast.error("Erreur lors de la suppression d'un monstre :", error);
+    }
+  }
+
+  async function createMonster(values: z.infer<typeof newMonsterSchema>) {
+    try {
+      await fetch('http://localhost:8888/monsters', {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
+      await fetchMonsters();
+      setOpen(false);
+      form.reset();
+      toast.success(`Monstre ${values.name} créé avec succès`);
+    } catch (error) {
+      toast.error('Erreur lors de la création du monstre :', error);
     }
   }
 
@@ -79,27 +138,35 @@ export function Monsters() {
     {
       accessorKey: 'element',
       header: 'Element',
-      cell: ({ row }) => <div>{row.getValue('element')}</div>,
+      cell: ({ row }) => {
+        const elementKey = row.getValue('element') as keyof typeof ENUM_ELEMENT;
+        return <div>{ENUM_ELEMENT[elementKey] || elementKey}</div>;
+      },
     },
     {
       accessorKey: 'hp',
-      header: 'HP',
+      header: 'Points de vie',
       cell: ({ row }) => <div>{row.getValue('hp')}</div>,
     },
     {
       accessorKey: 'atk',
-      header: 'ATK',
+      header: 'Attaque',
       cell: ({ row }) => <div>{row.getValue('atk')}</div>,
     },
     {
       accessorKey: 'def',
-      header: 'DEF',
+      header: 'Défense',
       cell: ({ row }) => <div>{row.getValue('def')}</div>,
     },
     {
       accessorKey: 'vit',
-      header: 'VIT',
+      header: 'Vitesse',
       cell: ({ row }) => <div>{row.getValue('vit')}</div>,
+    },
+    {
+      accessorKey: 'level',
+      header: 'Niveau',
+      cell: ({ row }) => <div>{row.getValue('level')}</div>,
     },
     {
       id: 'actions',
@@ -119,9 +186,12 @@ export function Monsters() {
               <DropdownMenuItem className='flex gap-4' onClick={() => navigator.clipboard.writeText(monster.id)}>
                 <Copy className='w-4 h-4' /> Copier l'ID du monstre
               </DropdownMenuItem>
-              {/* <DropdownMenuItem className='flex gap-4 text-red-700 hover:!text-red-700' onClick={() => deleteMonster(monster.id)}>
+              <DropdownMenuItem className='flex gap-4' onClick={() => levelUp(monster.id)}>
+                <ArrowUpCircleIcon className='w-4 h-4' /> Améliorer le monstre
+              </DropdownMenuItem>
+              <DropdownMenuItem className='flex gap-4 text-red-700 hover:!text-red-700' onClick={() => deleteMonster(monster.id)}>
                 <Trash className='w-4 h-4' /> Supprimer le monstre
-              </DropdownMenuItem> */}
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         );
@@ -177,8 +247,8 @@ export function Monsters() {
               <DialogTitle>Création d'un nouveau monstre</DialogTitle>
               <DialogDescription>Vous pouvez créer un monstre dans cette interface.</DialogDescription>
             </DialogHeader>
-            {/* <Form {...form}>
-              <form onSubmit={form.handleSubmit(createNewPlayer)} className='space-y-8'>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(createMonster)} className='space-y-8'>
                 <FormField
                   control={form.control}
                   name='name'
@@ -186,16 +256,100 @@ export function Monsters() {
                     <FormItem>
                       <FormLabel>Nom</FormLabel>
                       <FormControl>
-                        <Input placeholder='monstre 1' {...field} />
+                        <Input placeholder='Bigfoot' {...field} />
                       </FormControl>
                       <FormDescription>Le nom visible de votre monstre</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+                <div className='grid grid-cols-2 gap-8'>
+                  <FormField
+                    control={form.control}
+                    name='hp'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Points de vie</FormLabel>
+                        <FormControl>
+                          <Input type='number' placeholder='100' {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name='atk'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Attaque</FormLabel>
+                        <FormControl>
+                          <Input type='number' placeholder='100' {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className='grid grid-cols-2 gap-8'>
+                  <FormField
+                    control={form.control}
+                    name='def'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Défense</FormLabel>
+                        <FormControl>
+                          <Input type='number' placeholder='100' {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name='vit'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Vitesse</FormLabel>
+                        <FormControl>
+                          <Input type='number' placeholder='100' {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <FormField
+                  control={form.control}
+                  name='element'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Element</FormLabel>
+                      <FormControl>
+                        <Select {...field} onValueChange={field.onChange} value={field.value}>
+                          <SelectTrigger>
+                            <SelectValue placeholder='Element' />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {Object.entries(ENUM_ELEMENT).map(([key, value]) => (
+                              <SelectItem key={key} value={key}>
+                                {value}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 <Button type='submit'>Enregistrer</Button>
               </form>
-            </Form> */}
+            </Form>
           </DialogContent>
         </Dialog>
       </div>

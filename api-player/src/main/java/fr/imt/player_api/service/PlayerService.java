@@ -2,6 +2,7 @@ package fr.imt.player_api.service;
 
 import fr.imt.player_api.model.PlayerModel;
 import fr.imt.player_api.repository.PlayerRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,10 +10,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class PlayerService {
 
-    @Autowired
-    private PlayerRepository playerRepository;
+    private final PlayerRepository playerRepository;
 
     public PlayerModel levelUp(String userId) {
         try {

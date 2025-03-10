@@ -111,9 +111,8 @@ class MonsterServiceTest {
     void levelUpMonster_NotFound_ShouldThrowException() {
         when(monsterRepository.findById("999")).thenReturn(Optional.empty());
 
-        NoSuchElementException thrown = assertThrows(NoSuchElementException.class, () -> {
-            monsterService.levelUpMonster("999");
-        });
+        NoSuchElementException thrown = assertThrows(NoSuchElementException.class,
+                () -> monsterService.levelUpMonster("999"));
 
         assertEquals("Monstre non trouvé avec l'ID : 999", thrown.getMessage());
         verify(monsterRepository, never()).save(any());

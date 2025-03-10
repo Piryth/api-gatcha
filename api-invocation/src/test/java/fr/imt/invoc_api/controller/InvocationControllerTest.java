@@ -34,7 +34,7 @@ class InvocationControllerTest {
 
     @Test
     void getInvocationReturnsRandomInvocation() {
-        Invocation invocation = new Invocation("1", null, 0, 0, 0, 0, null, 0.3f);
+        Invocation invocation = new Invocation("1", "", null, 0, 0, 0, 0, null, 0.3f);
         when(invocationService.getRandomInvocation()).thenReturn(invocation);
 
         Invocation result = invocationController.getInvocation().getBody();
@@ -54,8 +54,8 @@ class InvocationControllerTest {
     @Test
     void getInvocationsReturnsListOfInvocations() {
         List<Invocation> invocations = Arrays.asList(
-                new Invocation("1", null, 0, 0, 0, 0, null, 0.3f),
-                new Invocation("2", null, 0, 0, 0, 0, null, 0.3f)
+                new Invocation("1", "", null, 0, 0, 0, 0, null, 0.3f),
+                new Invocation("2", "", null, 0, 0, 0, 0, null, 0.3f)
         );
         when(invocationService.getInvocations()).thenReturn(invocations);
 
@@ -67,10 +67,10 @@ class InvocationControllerTest {
     @Test
     void createAllInvocationsReturnsListOfCreatedInvocations() {
         List<Invocation> invocations = Arrays.asList(
-                new Invocation("1", null, 0, 0, 0, 0, null, 0.3f),
-                new Invocation("2", null, 0, 0, 0, 0, null, 0.3f),
-                new Invocation("3", null, 0, 0, 0, 0, null, 0.3f),
-                new Invocation("4", null, 0, 0, 0, 0, null, 0.3f)
+                new Invocation("1", "", null, 0, 0, 0, 0, null, 0.3f),
+                new Invocation("2", "", null, 0, 0, 0, 0, null, 0.3f),
+                new Invocation("3", "", null, 0, 0, 0, 0, null, 0.3f),
+                new Invocation("4", "", null, 0, 0, 0, 0, null, 0.3f)
         );
         when(invocationService.createAllInvocations(invocations)).thenReturn(invocations);
 

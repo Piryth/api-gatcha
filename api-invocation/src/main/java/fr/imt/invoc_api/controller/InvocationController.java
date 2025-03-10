@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/invocations")
+@RequestMapping("/invocation-api/v1/invocations")
 public class InvocationController {
 
     private final InvocationService invocationService;
@@ -27,7 +27,7 @@ public class InvocationController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/list")
     public ResponseEntity<List<Invocation>> getInvocations() {
         try {
             return ResponseEntity.ok(invocationService.getInvocations());
@@ -41,7 +41,7 @@ public class InvocationController {
         return invocationService.createAllInvocations(invocations);
     }
 
-    @DeleteMapping("/")
+    @DeleteMapping("/delete")
     public ResponseEntity<Void> deleteAllInvocations() {
         invocationService.deleteAllInvocations();
         return ResponseEntity.ok().build();

@@ -3,40 +3,39 @@ package fr.imt.player_api.controller;
 import fr.imt.player_api.dto.GainExperienceRequestDto;
 import fr.imt.player_api.model.PlayerModel;
 import fr.imt.player_api.service.PlayerService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
-@RequestMapping("/api/players")
+@RequestMapping("/player-api/v1/players")
+@RequiredArgsConstructor
 public class PlayerController {
 
-    @Autowired
-    private PlayerService playerService;
+    private final PlayerService playerService;
 
     @PostMapping("/new")
     public ResponseEntity<PlayerModel> createPlayer(@RequestBody PlayerModel player) {
         PlayerModel createdPlayer = playerService.createPlayer(player);
         return ResponseEntity.ok(createdPlayer);
     }
+
     @GetMapping("/list")
-    public ResponseEntity<List<PlayerModel>> listPlayers(){
+    public ResponseEntity<List<PlayerModel>> listPlayers() {
         List<PlayerModel> players = playerService.listPlayers();
         return ResponseEntity.ok(players);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PlayerModel> getPlayer(@PathVariable String id){
+    public ResponseEntity<PlayerModel> getPlayer(@PathVariable String id) {
         PlayerModel player = playerService.getPlayer(id);
         return ResponseEntity.ok(player);
     }
 
     @GetMapping("/{id}/level")
-    public ResponseEntity<Integer> getPlayerLevel(@PathVariable String id){
+    public ResponseEntity<Integer> getPlayerLevel(@PathVariable String id) {
         int level = playerService.getLevelOfPlayer(id);
         return ResponseEntity.ok(level);
     }
@@ -67,8 +66,8 @@ public class PlayerController {
     }
 
     @PostMapping("/{playerId}/monsters/{monsterId}")
-    public ResponseEntity<String> addMonsterToPlayer(@PathVariable String playerId, @PathVariable String monsterId){
-        String res = playerService.addMonsterToPlayer(playerId,monsterId);
+    public ResponseEntity<String> addMonsterToPlayer(@PathVariable String playerId, @PathVariable String monsterId) {
+        String res = playerService.addMonsterToPlayer(playerId, monsterId);
         return ResponseEntity.ok(res);
     }
 

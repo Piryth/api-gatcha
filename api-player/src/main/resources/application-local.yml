@@ -3,9 +3,18 @@ server:
 
 spring:
   application:
-    name: player-api
+    name: api-player
   data:
     mongodb:
       host: localhost
-      port: 27017
-      database: playerAPI
+      database: api_player
+      port: 27019
+      username: root
+      password: example
+      authentication-database: admin
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    preferIpAddress: true

@@ -3,32 +3,44 @@ package fr.imt.auth_api.domain;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.Value;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
 
 @Builder
 @AllArgsConstructor
-@Getter
+@Value
 @Document("users")
-public class AppUser {
+public class AppUser implements UserDetails {
 
     @Id
-    private String id;
+    String id;
 
     @Indexed(unique = true)
     @NotNull
-    private String username;
+    String username;
 
     @Indexed(unique = true)
     @NotNull
-    private String email;
+    String email;
 
     @NotNull
-    private String password;
+    String password;
 
     @NotNull
-    private String role;
+    String role;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role));
+    }
 
 }
