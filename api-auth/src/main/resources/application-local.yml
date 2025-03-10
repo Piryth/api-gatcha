@@ -19,4 +19,4 @@ eureka:
     preferIpAddress: true
 jwt:
   private:
-    file: certs/jwt_private.pem
+    file: certs/jwt-private-key-example.pem
