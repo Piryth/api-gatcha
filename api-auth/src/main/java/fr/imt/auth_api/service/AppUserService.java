@@ -78,6 +78,7 @@ public class AppUserService {
 
 
     public AppUser getConnectedUser(String token) {
+        token = token.trim();
         String username = jwtService.extractUsername(token);
         return appUserRepository.findAppUserByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }

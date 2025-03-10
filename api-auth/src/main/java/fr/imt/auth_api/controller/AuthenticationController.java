@@ -36,8 +36,7 @@ public class AuthenticationController {
 
     @GetMapping("me")
     public ResponseEntity<AppUser> getConnectedUser(@RequestHeader("Authorization") String token) {
-        log.info("Fetching connected user");
-        return ResponseEntity.ok(appUserService.getConnectedUser(token));
+        return ResponseEntity.ok(appUserService.getConnectedUser(token.substring(7)));
     }
 
 

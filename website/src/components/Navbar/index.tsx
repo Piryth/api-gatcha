@@ -20,11 +20,13 @@ import {
   DropdownMenuSubContent,
 } from '../ui/dropdown-menu';
 import { DropdownMenuShortcut } from '../ui/dropdown-menu';
+import { toast } from 'sonner';
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
   const navigate = useNavigate();
+  const { authUser, setAuthUser } = useAuthContext();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -39,10 +41,10 @@ export const Navbar = () => {
 
   async function logout() {
     document.cookie = 'Bearer=; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
+    setAuthUser(null);
     navigate('/login');
+    toast.success('Déconnexion réussie');
   }
-
-  const { authUser } = useAuthContext();
 
   return (
     <>
@@ -69,7 +71,7 @@ export const Navbar = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className='w-56 '>
-                  <DropdownMenuLabel>{authUser?.username}</DropdownMenuLabel>
+                  <DropdownMenuLabel>Username : {authUser?.username}</DropdownMenuLabel>
 
                   {/* <DropdownMenuSeparator />
                   <DropdownMenuItem>

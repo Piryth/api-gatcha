@@ -1,3 +1,4 @@
+import { axiosConfig } from '@/config/axiosConfig';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { ReactNode } from 'react';
 
@@ -23,12 +24,8 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     const getAuthUser = async () => {
       setLoading(true);
       try {
-        const userResponse = await fetch('http://localhost:8888/auth-api/v1/auth/me', {
-          headers: {
-            Authorization: `Bearer ${document.cookie.split('=')[1]}`,
-          },
-        });
-        const userData = await userResponse.json();
+        const userResponse = await axiosConfig.get('/auth-api/v1/auth/me');
+        const userData = userResponse.data;
         setAuthUser(userData);
       } catch (error) {
         setAuthUser(null);
