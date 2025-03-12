@@ -20,7 +20,7 @@ public class Skill {
     private int lvlMax;
 
     @NotNull
-    private double damage;
+    private double dmg;
 
     @NotNull
     private double cooldown;

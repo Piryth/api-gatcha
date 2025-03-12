@@ -1,5 +1,5 @@
 server:
-  port: 8082
+  port: 8083
 
 spring:
   application:
@@ -10,7 +10,7 @@ spring:
       database: api_monster
       port: 27019
       username: root
-      password: azerty
+      password: example
       authentication-database: admin
 
 eureka:

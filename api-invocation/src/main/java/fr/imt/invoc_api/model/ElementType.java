@@ -1,6 +1,6 @@
 package fr.imt.invoc_api.model;
 
-public enum Type {
+public enum ElementType {
     FIRE,
     WATER,
     EARTH,

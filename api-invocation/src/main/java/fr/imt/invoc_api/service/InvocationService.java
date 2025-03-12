@@ -1,8 +1,9 @@
 package fr.imt.invoc_api.service;
 
-import fr.imt.invoc_api.client.MonsterApiService;
-import fr.imt.invoc_api.client.PlayerApiService;
+import fr.imt.invoc_api.client.MonsterClient;
+import fr.imt.invoc_api.client.PlayerClient;
 import fr.imt.invoc_api.model.Invocation;
+import fr.imt.invoc_api.model.response.MonsterResponse;
 import fr.imt.invoc_api.model.save.SaveInvocation;
 import fr.imt.invoc_api.repository.InvocationRepository;
 import fr.imt.invoc_api.repository.SaveInvocationRepository;
@@ -18,17 +19,17 @@ public class InvocationService {
     private final SaveInvocationRepository saveInvocationRepository;
 
     private static final Random random = new Random();
-    private final MonsterApiService monsterApiService;
-    private final PlayerApiService playerApiService;
+    private final MonsterClient monsterClient;
+    private final PlayerClient playerClient;
 
-    public InvocationService(InvocationRepository invocationRepository, SaveInvocationRepository saveInvocationRepository, MonsterApiService monsterApiService, PlayerApiService playerApiService) {
+    public InvocationService(InvocationRepository invocationRepository, SaveInvocationRepository saveInvocationRepository, MonsterClient monsterClient, PlayerClient playerClient) {
         this.invocationRepository = invocationRepository;
         this.saveInvocationRepository = saveInvocationRepository;
-        this.monsterApiService = monsterApiService;
-        this.playerApiService = playerApiService;
+        this.monsterClient = monsterClient;
+        this.playerClient = playerClient;
     }
 
-    public Invocation getRandomInvocation() throws IllegalStateException {
+    public Invocation getRandomInvocation(String playerId) throws IllegalStateException {
         List<Invocation> invocations = invocationRepository.findAll();
 
         if (invocations.isEmpty()) {
@@ -52,15 +53,15 @@ public class InvocationService {
             throw new IllegalStateException("No invocation found");
         }
 
-        String playerId = "playerId";
         SaveInvocation saveInvocation = SaveInvocation.builder()
                 .playerId(playerId)
                 .invocation(invocation)
                 .build();
 
+        MonsterResponse monster = monsterClient.createMonster(invocation);
+        playerClient.addMonster(playerId, monster.getId());
+
         saveInvocationRepository.save(saveInvocation);
-        String monsterId = monsterApiService.createMonster(invocation);
-        playerApiService.addMonster(playerId, monsterId);
 
         return invocation;
     }

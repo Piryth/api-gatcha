@@ -1,10 +1,12 @@
 package fr.imt.invoc_api.model.response;
 
-import fr.imt.invoc_api.model.Type;
+import fr.imt.invoc_api.model.ElementType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Value;
+
+import java.util.List;
 
 @Value
 @Getter
@@ -13,11 +15,11 @@ import lombok.Value;
 public class MonsterResponse {
 
     String id;
-    Type element;
+    ElementType element;
     double hp;
     double atk;
     double def;
     int vit;
-    SkillResponse skills;
+    List<SkillResponse> skills;
 
 }

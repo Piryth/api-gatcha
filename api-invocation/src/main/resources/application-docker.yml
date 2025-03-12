@@ -9,6 +9,14 @@ spring:
       username: root
       password: example
       authentication-database: admin
+  cloud:
+    openfeign:
+      client:
+        config:
+          api-monster:
+            url: "http://monster-api:8080/"
+          api-player:
+            url: "http://player-api:8080/"
 eureka:
   client:
     serviceUrl:
