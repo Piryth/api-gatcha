@@ -1,5 +1,5 @@
 server:
-  port: 8083
+  port: 8082
 spring:
   application:
     name: api-invocation
@@ -11,6 +11,14 @@ spring:
       username: root
       password: example
       authentication-database: admin
+  cloud:
+    openfeign:
+      client:
+        config:
+          api-monster:
+            url: "http://localhost:8083/"
+          api-player:
+            url: "http://localhost:8081/"
 eureka:
   client:
     serviceUrl:
