@@ -33,7 +33,11 @@ export default function LoginPage() {
       setAuthUser(data.user);
       navigate('/');
     } catch (error: any) {
-      toast.error(error.response.data);
+      if (error.response) {
+        toast.error(error.response.data);
+      } else {
+        toast.error("Une erreur s'est produite, veuillez réessayer");
+      }
     }
   }
 
