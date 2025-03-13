@@ -18,17 +18,17 @@ import java.security.spec.X509EncodedKeySpec;
 public class JwtConfig {
 
     @Value("${jwt.public.file:#{null}}")
-    private String jwtSecretFilePath;
+    private String jwtPublicKeyFilePath;
 
     @Bean
     public PublicKey jwtPublicKey() throws Exception {
-        if (jwtSecretFilePath == null) {
+        if (jwtPublicKeyFilePath == null) {
             throw new NoJwtSecretFilePathException();
         }
 
         KeyFactory factory = KeyFactory.getInstance("RSA");
 
-        Resource resource = new ClassPathResource(jwtSecretFilePath);
+        Resource resource = new ClassPathResource(jwtPublicKeyFilePath);
         InputStreamReader reader = new InputStreamReader(resource.getInputStream());
 
         PemReader pemReader = new PemReader(reader);

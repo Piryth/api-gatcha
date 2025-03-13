@@ -12,32 +12,49 @@ import org.springframework.core.io.Resource;
 import java.io.InputStreamReader;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 
 @Configuration
 public class JwtConfig {
 
     @Value("${jwt.private.file:#{null}}")
-    private String jwtSecretFilePath;
+    private String jwtPrivateKeyFilePath;
+
+    @Value("${jwt.public.file:#{null}}")
+    private String jwtPublicKeyFilePath;
 
     @Bean
     public PrivateKey jwtPrivateKey() throws Exception {
-        if (jwtSecretFilePath == null) {
+        byte[] privateKeyContent = readFile(jwtPrivateKeyFilePath);
+        KeyFactory factory = KeyFactory.getInstance("RSA");
+
+        PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(privateKeyContent);
+        return factory.generatePrivate(privateKeySpec);
+    }
+
+    @Bean
+    public PublicKey jwtPublicKey() throws Exception {
+        byte[] publicKeyContent = readFile(jwtPublicKeyFilePath);
+        KeyFactory factory = KeyFactory.getInstance("RSA");
+
+        X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(publicKeyContent);
+        return factory.generatePublic(publicKeySpec);
+    }
+
+    private byte[] readFile(String filePath) throws Exception {
+        if (filePath == null) {
             throw new NoJwtSecretFilePathException();
         }
 
-        KeyFactory factory = KeyFactory.getInstance("RSA");
-
-        Resource resource = new ClassPathResource(jwtSecretFilePath);
+        Resource resource = new ClassPathResource(filePath);
         InputStreamReader reader = new InputStreamReader(resource.getInputStream());
 
         PemReader pemReader = new PemReader(reader);
         PemObject pemObject = pemReader.readPemObject();
 
-        byte[] content = pemObject.getContent();
-
-        PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(content);
-        return factory.generatePrivate(privateKeySpec);
+        return pemObject.getContent();
     }
 
 }

@@ -28,3 +28,5 @@ management:
 jwt:
   private:
     file: certs/private.pem
+  public:
+    file: certs/public.pem

@@ -2,6 +2,7 @@ FROM maven:3.9.9-amazoncorretto-23-alpine AS build
 LABEL authors="champeic"
 
 ARG PRIVATE_KEY_PATH
+ARG PUBLIC_KEY_PATH
 
 RUN mkdir -p /workspace
 WORKDIR /workspace
@@ -9,6 +10,7 @@ WORKDIR /workspace
 COPY . .
 
 COPY --from=openssl-keygen:latest ${PRIVATE_KEY_PATH} /workspace/api-auth/src/main/resources/certs/private.pem
+COPY --from=openssl-keygen:latest ${PUBLIC_KEY_PATH} /workspace/api-auth/src/main/resources/certs/public.pem
 
 RUN mvn -pl api-auth clean package -DskipTests
 
