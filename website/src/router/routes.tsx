@@ -7,6 +7,7 @@ import { Players } from '@/pages/Players';
 import { Register } from '@/pages/auth/Register';
 import Login from '@/pages/auth/Login';
 import { ProtectedRoute } from './authRequired';
+import { Invoc } from '@/pages/Invoc';
 
 const RootLayout = () => (
   <div className='flex flex-col min-h-screen'>
@@ -51,6 +52,7 @@ export const Router = () => {
           <Route path='/' element={<Home />} key={'/'} />,
           <Route path='/monsters' element={<Monsters />} key={'/monsters'} />,
           <Route path='/players' element={<Players />} key={'/players'} />,
+          <Route path='/invoc' element={<Invoc />} key={'/invoc'} />,
         ]}
       />
     </Routes>

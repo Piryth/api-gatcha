@@ -56,6 +56,9 @@ export const Navbar = () => {
           <div className='flex gap-4 items-center'>
             <div className='flex gap-2'>
               <Button asChild variant='link'>
+                <Link to='/invoc'>Invocations</Link>
+              </Button>
+              <Button asChild variant='link'>
                 <Link to='/players'>Joueurs</Link>
               </Button>
               <Button asChild variant='link'>
@@ -72,16 +75,6 @@ export const Navbar = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className='w-56 '>
                   <DropdownMenuLabel>Username : {authUser?.username}</DropdownMenuLabel>
-
-                  {/* <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <Link target='_blank' to={'https://github.com/Piryth/api-gatcha'}>
-                      Source code
-                    </Link>
-                    <DropdownMenuShortcut>
-                      <Github className='w-4 h-4' />
-                    </DropdownMenuShortcut>
-                  </DropdownMenuItem> */}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => logout()}>
                     Se déconnecter
@@ -115,6 +108,12 @@ export const Navbar = () => {
           </div>
 
           <div className='flex flex-col gap-4 p-8 pt-2'>
+            <Button asChild variant='link' className='flex gap-4 items-center justify-start' onClick={() => setIsOpen(!isOpen)}>
+              <Link to='/invoc'>
+                <User className='w-4 h-4' />
+                Invocations
+              </Link>
+            </Button>
             <Button asChild variant='link' className='flex gap-4 items-center justify-start' onClick={() => setIsOpen(!isOpen)}>
               <Link to='/players'>
                 <User className='w-4 h-4' />
