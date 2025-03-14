@@ -1,14 +1,25 @@
 server:
-  port: 8080
-
+  port: 8084
 spring:
   application:
-    name: combat-api
+    name: api-combat
   data:
     mongodb:
       host: localhost
-      port: 27017
       database: api_combat
-      authentication-database: admin
+      port: 27019
       username: root
       password: example
+      authentication-database: admin
+  cloud:
+    openfeign:
+      client:
+        config:
+          api-monster:
+            url: "http://localhost:8083/"
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    preferIpAddress: true

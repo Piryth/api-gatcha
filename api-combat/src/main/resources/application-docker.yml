@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: api-combat
+  data:
+    mongodb:
+      host: mongodb-gatcha
+      database: api_combat
+      port: 27017
+      username: root
+      password: example
+      authentication-database: admin
+  cloud:
+    openfeign:
+      client:
+        config:
+          api-monster:
+            url: "http://monster-api:8080/"
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://discovery-server:8761/eureka}
+  instance:
+    preferIpAddress: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
