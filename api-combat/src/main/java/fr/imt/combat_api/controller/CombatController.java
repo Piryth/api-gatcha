@@ -4,12 +4,14 @@ import fr.imt.combat_api.model.Combat;
 import fr.imt.combat_api.service.CombatService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
-@RequestMapping("/combat")
+@RequestMapping("/combat-api/v1/combats")
 public class CombatController {
 
     private final CombatService combatService;
@@ -26,6 +28,9 @@ public class CombatController {
      */
     @PostMapping("/start")
     public ResponseEntity<Combat> startCombat(@RequestBody List<String> monsterIds) {
+        if (monsterIds.size() < 2) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please provide at least 2 monster ids");
+        }
         Combat startedCombat = combatService.startCombat(monsterIds.getFirst(), monsterIds.get(1));
         return ResponseEntity.ok(startedCombat);
     }
@@ -49,11 +54,9 @@ public class CombatController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Combat> getCombat(@PathVariable String id) {
-        Combat combat = combatService.getCombat(id);
-        if (combat != null) {
-            return ResponseEntity.ok(combat);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        Optional<Combat> combat = combatService.getCombat(id);
+        return combat.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
 }

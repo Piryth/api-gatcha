@@ -141,7 +141,7 @@ public class CombatService {
         return combatRepository.findAll();
     }
 
-    public Combat getCombat(String id) {
-        return combatRepository.findById(id).orElse(null);
+    public Optional<Combat> getCombat(String id) {
+        return combatRepository.findById(id);
     }
 }

@@ -9,7 +9,7 @@ public class WebClientConfig {
 
     @Bean
     public WebClient monsterClient(WebClient.Builder builder) {
-        return builder.baseUrl("http://localhost:8083").build();
+        return builder.baseUrl("lb://api-monster").build();
     }
 
 }

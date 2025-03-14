@@ -1,20 +1,15 @@
 package fr.imt.combat_api.model;
 
-import jakarta.persistence.Id;
-import lombok.*;
-import org.springframework.data.mongodb.core.mapping.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.Data;
 
 @Document
-@Getter
-@Setter
-@ToString
+@Data
 public class Round {
-
     @Id
     private String id;
-
     private String idAttacker;
     private String idSkillUsed;
     private double damageDealt;
-
 }
