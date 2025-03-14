@@ -13,7 +13,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { Copy, MoreHorizontal, MoreVertical, RefreshCw, Trash } from 'lucide-react';
+import { Copy, MoreHorizontal, MoreVertical, Plus, RefreshCw, Trash } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,7 +21,15 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { toast } from 'sonner';
 import { axiosConfig } from '@/config/axiosConfig';
-import { ElementType } from '@/types/ElementType';
+import { ElementType, ENUM_ELEMENT } from '@/types/ElementType';
+import { DialogHeader, Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { FormField, FormItem, FormLabel, FormControl, FormMessage, Form } from '../components/ui/form';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { invocSchema } from '@/lib/zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../components/ui/select';
+import { Player } from './Players';
 
 export type Invoc = {
   id: string;
@@ -32,14 +40,34 @@ export type Invoc = {
 
 export function Invoc() {
   const [invocs, setInvocs] = React.useState<Invoc[]>([]);
+  const [players, setPlayers] = React.useState<Player[]>([]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+
+  const form = useForm<z.infer<typeof invocSchema>>({
+    resolver: zodResolver(invocSchema),
+    defaultValues: {
+      playerId: '',
+    },
+  });
   React.useEffect(() => {
     fetchInvocs();
+    fetchPlayers();
   }, []);
+
+  async function fetchPlayers() {
+    try {
+      const response = await axiosConfig.get('/players/list');
+      const data = await response.data;
+      setPlayers(data);
+    } catch (error) {
+      toast.error('Erreur lors de la récupération des joueurs :', error);
+    }
+  }
 
   async function fetchInvocs() {
     try {
@@ -62,6 +90,18 @@ export function Invoc() {
     }
   }
 
+  async function randomInvoc(values: z.infer<typeof invocSchema>) {
+    try {
+      const response = await axiosConfig.get(`/invocations/random/${values.playerId}`);
+      const data = await response.data;
+      setInvocs(data);
+      setDialogOpen(false);
+      toast.success('Invocation aléatoire réussie, rendez vous sur la page des monstres');
+    } catch (error) {
+      toast.error("Erreur lors de l'invocation aléatoire :", error);
+    }
+  }
+
   const columns: ColumnDef<Invoc>[] = [
     {
       accessorKey: 'name',
@@ -71,7 +111,10 @@ export function Invoc() {
     {
       accessorKey: 'element',
       header: 'Élément',
-      cell: ({ row }) => <div>{row.getValue('element')}</div>,
+      cell: ({ row }) => {
+        const elementKey = row.getValue('element') as keyof typeof ENUM_ELEMENT;
+        return <div>{ENUM_ELEMENT[elementKey] || elementKey}</div>;
+      },
     },
     {
       accessorKey: 'lootRate',
@@ -126,12 +169,17 @@ export function Invoc() {
     <div className='w-full p-16'>
       <h1 className='text-4xl'>Listes des invocations</h1>
       <div className='flex w-full items-center justify-between py-4'>
-        <Input
-          placeholder='Rechercher une invocation...'
-          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
-          onChange={(event) => table.getColumn('name')?.setFilterValue(event.target.value)}
-          className='max-w-sm'
-        />
+        <div className='flex gap-4 items-center'>
+          <Input
+            placeholder='Rechercher une invocation...'
+            value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
+            onChange={(event) => table.getColumn('name')?.setFilterValue(event.target.value)}
+            className='max-w-sm'
+          />
+          <Button variant='outline' onClick={() => fetchInvocs()}>
+            <RefreshCw className='w-4 h-4' />
+          </Button>
+        </div>
         <div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -140,14 +188,14 @@ export function Invoc() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align='start'>
-              <DropdownMenuItem className='flex gap-4' onClick={fetchInvocs}>
-                <RefreshCw className='w-4 h-4' /> Rafraîchir
+              <DropdownMenuItem className='flex gap-4' onClick={() => setDialogOpen(true)}>
+                <Plus className='w-4 h-4' /> Ajouter une invocation
               </DropdownMenuItem>
               <DropdownMenuItem className='flex gap-4 text-red-700 hover:!text-red-700' onClick={deleteInvoc}>
                 <Trash className='w-4 h-4' /> Supprimer les invocations
               </DropdownMenuItem>
             </DropdownMenuContent>
-          </DropdownMenu>{' '}
+          </DropdownMenu>
         </div>
       </div>
       <div className='rounded-md border'>
@@ -182,6 +230,45 @@ export function Invoc() {
           </TableBody>
         </Table>
       </div>
+      {dialogOpen && (
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <DialogContent className='sm:max-w-[625px]'>
+            <DialogHeader>
+              <DialogTitle>Invocer un monstre</DialogTitle>
+              <DialogDescription>Choissisez le joueur recevant l'invocation aléatoire</DialogDescription>
+            </DialogHeader>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(randomInvoc)} className='space-y-8'>
+                <FormField
+                  control={form.control}
+                  name='playerId'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Joueur sélectionné</FormLabel>
+                      <FormControl>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <SelectTrigger>
+                            <SelectValue placeholder='Bob' />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {players.map((p: Player) => (
+                              <SelectItem key={p.id} value={p.id}>
+                                {p.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type='submit'>Enregistrer</Button>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }

@@ -59,10 +59,10 @@ export const Navbar = () => {
                 <Link to='/invoc'>Invocations</Link>
               </Button>
               <Button asChild variant='link'>
-                <Link to='/players'>Joueurs</Link>
+                <Link to='/monsters'>Monstres</Link>
               </Button>
               <Button asChild variant='link'>
-                <Link to='/monsters'>Monstres</Link>
+                <Link to='/players'>Joueurs</Link>
               </Button>
             </div>
             <Separator orientation='vertical' className='h-6' />
@@ -115,15 +115,15 @@ export const Navbar = () => {
               </Link>
             </Button>
             <Button asChild variant='link' className='flex gap-4 items-center justify-start' onClick={() => setIsOpen(!isOpen)}>
-              <Link to='/players'>
-                <User className='w-4 h-4' />
-                Joueurs
-              </Link>
-            </Button>
-            <Button asChild variant='link' className='flex gap-4 items-center justify-start' onClick={() => setIsOpen(!isOpen)}>
               <Link to='/monsters'>
                 <Briefcase className='w-4 h-4' />
                 Monstres
+              </Link>
+            </Button>
+            <Button asChild variant='link' className='flex gap-4 items-center justify-start' onClick={() => setIsOpen(!isOpen)}>
+              <Link to='/players'>
+                <User className='w-4 h-4' />
+                Joueurs
               </Link>
             </Button>
             <Separator />

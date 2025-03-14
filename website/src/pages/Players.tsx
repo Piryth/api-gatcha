@@ -20,7 +20,7 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { addExpSchema, newPlayerSchema } from '@/lib/zod';
@@ -147,6 +147,14 @@ export function Players() {
       accessorKey: 'xpForNextLevel',
       header: 'Palier suivant',
       cell: ({ row }) => <div className='text-left'>{row.getValue('xpForNextLevel')}</div>,
+    },
+    {
+      accessorKey: 'monsters',
+      header: 'Nombre de monstres',
+      cell: ({ row }) => {
+        const monsters = row.getValue('monsters') as string[];
+        return <div className='text-left'>{monsters.length}</div>;
+      },
     },
     {
       id: 'actions',

@@ -20,6 +20,10 @@ export const addExpSchema = z.object({
   id: z.string(),
 });
 
+export const invocSchema = z.object({
+  playerId: z.string().min(1, 'Le joueur est requis pour invoquer un monstre.'),
+});
+
 export const newMonsterSchema = z.object({
   name: z
     .string()
