@@ -18,10 +18,10 @@ public class InvocationController {
         this.invocationService = invocationService;
     }
 
-    @GetMapping("/random")
-    public ResponseEntity<Invocation> getInvocation() {
+    @GetMapping("/random/{playerId}")
+    public ResponseEntity<Invocation> getInvocation(@PathVariable String playerId) {
         try {
-            return ResponseEntity.ok(invocationService.getRandomInvocation());
+            return ResponseEntity.ok(invocationService.getRandomInvocation(playerId));
         } catch (IllegalStateException e) {
             return ResponseEntity.internalServerError().body(null);
         }

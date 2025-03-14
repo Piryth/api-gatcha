@@ -28,6 +28,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ElementType, ENUM_ELEMENT } from '@/types/ElementType';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { axiosConfig } from '@/config/axiosConfig';
 
 export type Monster = {
   id: string;
@@ -76,8 +77,8 @@ export function Monsters() {
 
   async function fetchMonsters() {
     try {
-      const response = await fetch('http://localhost:8888/monsters/');
-      const data = await response.json();
+      const response = await axiosConfig.get('/monsters/list');
+      const data = await response.data;
       setMonsters(data);
       toast.success('Monstres récupérés avec succès');
     } catch (error) {
@@ -87,9 +88,7 @@ export function Monsters() {
 
   async function deleteMonster(monsterId: String) {
     try {
-      await fetch(`http://localhost:8888/monsters/${monsterId}`, {
-        method: 'delete',
-      });
+      await axiosConfig.delete(`/monsters/${monsterId}`);
       const monsterName = monsters.find((m) => m.id == monsterId)?.name;
       toast.success(`Monstre ${monsterName} supprimé avec succès`);
       setMonsters(monsters.filter((m) => m.id != monsterId));
@@ -100,9 +99,7 @@ export function Monsters() {
 
   async function levelUp(monsterId: String) {
     try {
-      await fetch(`http://localhost:8888/monsters/${monsterId}/levelUp`, {
-        method: 'put',
-      });
+      await axiosConfig.put(`/monsters/${monsterId}/levelUp`);
       await fetchMonsters();
       const monsterName = monsters.find((m) => m.id == monsterId)?.name;
       toast.success(`Monstre ${monsterName} amélioré avec succès`);
@@ -113,13 +110,7 @@ export function Monsters() {
 
   async function createMonster(values: z.infer<typeof newMonsterSchema>) {
     try {
-      await fetch('http://localhost:8888/monsters', {
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(values),
-      });
+      await axiosConfig.post('/monsters/new', values);
       await fetchMonsters();
       setOpen(false);
       form.reset();
@@ -329,7 +320,7 @@ export function Monsters() {
                     <FormItem>
                       <FormLabel>Element</FormLabel>
                       <FormControl>
-                        <Select {...field} onValueChange={field.onChange} value={field.value}>
+                        <Select onValueChange={field.onChange} value={field.value}>
                           <SelectTrigger>
                             <SelectValue placeholder='Element' />
                           </SelectTrigger>

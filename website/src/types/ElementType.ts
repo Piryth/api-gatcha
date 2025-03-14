@@ -5,7 +5,6 @@ export const ENUM_ELEMENT = {
   WIND: 'Vent',
   LIGHT: 'Lumière',
   DARK: 'Ténèbres',
-  UNKNOWN: 'Inconnu',
 };
 
 export type ElementType = (typeof ENUM_ELEMENT)[keyof typeof ENUM_ELEMENT];

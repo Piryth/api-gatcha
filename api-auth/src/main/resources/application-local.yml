@@ -20,3 +20,5 @@ eureka:
 jwt:
   private:
     file: certs/jwt-private-key-example.pem
+  public:
+    file: certs/jwt-public-key-example.pem

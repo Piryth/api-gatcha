@@ -36,18 +36,18 @@ class InvocationControllerTest {
     void getInvocationReturnsRandomInvocation() {
         Invocation invocation = Invocation.builder().id("1").build();
 
-        when(invocationService.getRandomInvocation()).thenReturn(invocation);
+        when(invocationService.getRandomInvocation("playerId")).thenReturn(invocation);
 
-        Invocation result = invocationController.getInvocation().getBody();
+        Invocation result = invocationController.getInvocation("playerId").getBody();
 
         assertEquals(invocation, result);
     }
 
     @Test
     void getInvocationReturnsNullWhenNoInvocation() {
-        when(invocationService.getRandomInvocation()).thenReturn(null);
+        when(invocationService.getRandomInvocation("playerId")).thenReturn(null);
 
-        Invocation result = invocationController.getInvocation().getBody();
+        Invocation result = invocationController.getInvocation("playerId").getBody();
 
         assertNull(result);
     }

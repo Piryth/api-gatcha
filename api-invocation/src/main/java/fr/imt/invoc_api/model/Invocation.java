@@ -6,6 +6,8 @@ import lombok.Value;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 @Value
 @Builder
 @AllArgsConstructor
@@ -15,12 +17,12 @@ public class Invocation {
     @Id
     String id;
     String name;
-    Type element;
+    ElementType element;
     float hp;
     float atk;
     float def;
     float vit;
-    Skill[] skills;
+    List<Skill> skills;
     float lootRate;
 
 }

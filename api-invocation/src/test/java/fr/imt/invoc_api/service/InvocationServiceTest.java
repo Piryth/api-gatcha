@@ -1,9 +1,9 @@
 package fr.imt.invoc_api.service;
 
-import fr.imt.invoc_api.client.MonsterApiService;
-import fr.imt.invoc_api.client.PlayerApiService;
+import fr.imt.invoc_api.client.MonsterClient;
+import fr.imt.invoc_api.client.PlayerClient;
 import fr.imt.invoc_api.model.Invocation;
-import fr.imt.invoc_api.model.Type;
+import fr.imt.invoc_api.model.ElementType;
 import fr.imt.invoc_api.repository.InvocationRepository;
 import fr.imt.invoc_api.repository.SaveInvocationRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,10 +27,10 @@ public class InvocationServiceTest {
     private SaveInvocationRepository saveInvocationRepository;
 
     @Mock
-    private MonsterApiService monsterApiService;
+    private MonsterClient monsterClient;
 
     @Mock
-    private PlayerApiService playerApiService;
+    private PlayerClient playerClient;
 
     @InjectMocks
     private InvocationService invocationService;
@@ -43,14 +43,14 @@ public class InvocationServiceTest {
     @Test
     void getRandomInvocationReturnsInvocationWhenListIsNotEmpty() {
         List<Invocation> invocations = Arrays.asList(
-                Invocation.builder().id("1").element(Type.WATER).lootRate(0.3f).build(),
-                Invocation.builder().id("2").element(Type.FIRE).lootRate(0.3f).build(),
-                Invocation.builder().id("3").element(Type.EARTH).lootRate(0.3f).build(),
-                Invocation.builder().id("4").element(Type.WIND).lootRate(0.1f).build()
+                Invocation.builder().id("1").element(ElementType.WATER).lootRate(0.3f).build(),
+                Invocation.builder().id("2").element(ElementType.FIRE).lootRate(0.3f).build(),
+                Invocation.builder().id("3").element(ElementType.EARTH).lootRate(0.3f).build(),
+                Invocation.builder().id("4").element(ElementType.WIND).lootRate(0.1f).build()
         );
         when(invocationRepository.findAll()).thenReturn(invocations);
 
-        Invocation result = invocationService.getRandomInvocation();
+        Invocation result = invocationService.getRandomInvocation("playerId");
 
         assertNotNull(result);
         assertTrue(invocations.contains(result));
@@ -59,10 +59,10 @@ public class InvocationServiceTest {
     @Test
     void getRandomInvocationReturnsInvocationBasedOnLootRates() {
         List<Invocation> invocations = Arrays.asList(
-                Invocation.builder().id("1").element(Type.WATER).lootRate(0.4f).build(),
-                Invocation.builder().id("2").element(Type.FIRE).lootRate(0.3f).build(),
-                Invocation.builder().id("3").element(Type.EARTH).lootRate(0.2f).build(),
-                Invocation.builder().id("4").element(Type.WIND).lootRate(0.1f).build()
+                Invocation.builder().id("1").element(ElementType.WATER).lootRate(0.4f).build(),
+                Invocation.builder().id("2").element(ElementType.FIRE).lootRate(0.3f).build(),
+                Invocation.builder().id("3").element(ElementType.EARTH).lootRate(0.2f).build(),
+                Invocation.builder().id("4").element(ElementType.WIND).lootRate(0.1f).build()
         );
         when(invocationRepository.findAll()).thenReturn(invocations);
 
@@ -73,7 +73,7 @@ public class InvocationServiceTest {
         int iterations = 100000;
 
         for (int i = 0; i < iterations; i++) {
-            Invocation result = invocationService.getRandomInvocation();
+            Invocation result = invocationService.getRandomInvocation("playerId");
             assertNotNull(result);
             switch (result.getId()) {
                 case "1":
@@ -100,10 +100,10 @@ public class InvocationServiceTest {
     @Test
     void getInvocationsReturnsAllInvocations() {
         List<Invocation> invocations = Arrays.asList(
-                Invocation.builder().id("1").element(Type.WATER).lootRate(0.3f).build(),
-                Invocation.builder().id("2").element(Type.FIRE).lootRate(0.3f).build(),
-                Invocation.builder().id("3").element(Type.EARTH).lootRate(0.3f).build(),
-                Invocation.builder().id("4").element(Type.WIND).lootRate(0.1f).build()
+                Invocation.builder().id("1").element(ElementType.WATER).lootRate(0.3f).build(),
+                Invocation.builder().id("2").element(ElementType.FIRE).lootRate(0.3f).build(),
+                Invocation.builder().id("3").element(ElementType.EARTH).lootRate(0.3f).build(),
+                Invocation.builder().id("4").element(ElementType.WIND).lootRate(0.1f).build()
         );
         when(invocationRepository.findAll()).thenReturn(invocations);
 
@@ -115,10 +115,10 @@ public class InvocationServiceTest {
     @Test
     void createAllInvocationsSavesAndReturnsAllInvocations() {
         List<Invocation> invocations = Arrays.asList(
-                Invocation.builder().id("1").element(Type.WATER).lootRate(0.3f).build(),
-                Invocation.builder().id("2").element(Type.FIRE).lootRate(0.3f).build(),
-                Invocation.builder().id("3").element(Type.EARTH).lootRate(0.3f).build(),
-                Invocation.builder().id("4").element(Type.WIND).lootRate(0.1f).build()
+                Invocation.builder().id("1").element(ElementType.WATER).lootRate(0.3f).build(),
+                Invocation.builder().id("2").element(ElementType.FIRE).lootRate(0.3f).build(),
+                Invocation.builder().id("3").element(ElementType.EARTH).lootRate(0.3f).build(),
+                Invocation.builder().id("4").element(ElementType.WIND).lootRate(0.1f).build()
         );
         when(invocationRepository.saveAll(invocations)).thenReturn(invocations);
 
@@ -130,10 +130,10 @@ public class InvocationServiceTest {
     @Test
     void createAllInvocationsThrowsIllegalArgumentExceptionWhenSumIsNotOne() {
         List<Invocation> invocations = Arrays.asList(
-                Invocation.builder().id("1").element(Type.WATER).lootRate(0.3f).build(),
-                Invocation.builder().id("2").element(Type.FIRE).lootRate(0.3f).build(),
-                Invocation.builder().id("3").element(Type.EARTH).lootRate(0.3f).build(),
-                Invocation.builder().id("4").element(Type.WIND).lootRate(0.5f).build()
+                Invocation.builder().id("1").element(ElementType.WATER).lootRate(0.3f).build(),
+                Invocation.builder().id("2").element(ElementType.FIRE).lootRate(0.3f).build(),
+                Invocation.builder().id("3").element(ElementType.EARTH).lootRate(0.3f).build(),
+                Invocation.builder().id("4").element(ElementType.WIND).lootRate(0.5f).build()
         );
 
         assertThrows(IllegalArgumentException.class, () -> invocationService.createAllInvocations(invocations));
