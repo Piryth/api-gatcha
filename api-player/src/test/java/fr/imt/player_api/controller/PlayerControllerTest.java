@@ -1,5 +1,6 @@
 package fr.imt.player_api.controller;
 
+import fr.imt.player_api.dto.GainExperienceRequestDto;
 import fr.imt.player_api.model.PlayerModel;
 import fr.imt.player_api.service.PlayerService;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +16,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-/*
 
 class PlayerControllerTest {
 
@@ -33,7 +33,7 @@ class PlayerControllerTest {
     @Test
     void createPlayerReturnsCreatedPlayer() {
         List<String> monsters = Arrays.asList("monster1", "monster2");
-        PlayerModel player = new PlayerModel(1, 50, 0, monsters, "Player1");
+        PlayerModel player = new PlayerModel(1, null, "Player1");
         when(playerService.createPlayer(player)).thenReturn(player);
 
         PlayerModel result = playerController.createPlayer(player).getBody();
@@ -45,8 +45,8 @@ class PlayerControllerTest {
     void listPlayersReturnsListOfPlayers() {
         List<String> monsters = Arrays.asList("monster1", "monster2");
         List<PlayerModel> players = Arrays.asList(
-                new PlayerModel(1, 50, 0, monsters, "Player1"),
-                new PlayerModel(2, 100, 0, monsters, "Player2")
+                new PlayerModel(1, null, "Player1"),
+                new PlayerModel(1, null, "Player2")
         );
         when(playerService.listPlayers()).thenReturn(players);
 
@@ -58,30 +58,17 @@ class PlayerControllerTest {
     @Test
     void getPlayerReturnsPlayerById() {
         List<String> monsters = Arrays.asList("monster1", "monster2");
-        PlayerModel player = new PlayerModel(1, 50, 0, monsters, "Player1");
-        when(playerService.getPlayer("1")).thenReturn(Optional.of(player));
-
-        PlayerModel result = playerController.getPlayer("1").getBody().get();
-
-        assertEquals(player, result);
-    }
-
-    @Test
-    void getPlayerReturnsNullWhenNoPlayer() {
-        when(playerService.getPlayer("1")).thenReturn(Optional.empty());
-
-        Optional<PlayerModel> result = playerController.getPlayer("1").getBody();
-
-        assertEquals(Optional.empty(), result);
+        PlayerModel player = new PlayerModel(1, null, "Player1");
+        when(playerService.getPlayer("1")).thenReturn(player);
+        ResponseEntity<PlayerModel> response = playerController.getPlayer("1");
+        assertEquals(player, response.getBody());
     }
 
     @Test
     void getPlayerLevelReturnsPlayerLevel() {
         when(playerService.getLevelOfPlayer("1")).thenReturn(5);
-
-        int result = playerController.getPlayerLevel("1").getBody();
-
-        assertEquals(5, result);
+        ResponseEntity<Integer> response = playerController.getPlayerLevel("1");
+        assertEquals(5, response.getBody());
     }
 
     @Test
@@ -97,7 +84,7 @@ class PlayerControllerTest {
     @Test
     void levelUpReturnsUpdatedPlayer() {
         List<String> monsters = Arrays.asList("monster1", "monster2");
-        PlayerModel player = new PlayerModel(1, 50, 0, monsters, "Player1");
+        PlayerModel player = new PlayerModel(1, null, "Player1");
         when(playerService.levelUp("1")).thenReturn(player);
 
         PlayerModel result = playerController.levelUp("1").getBody();
@@ -108,41 +95,31 @@ class PlayerControllerTest {
     @Test
     void gainExpReturnsUpdatedPlayer() {
         List<String> monsters = Arrays.asList("monster1", "monster2");
-        PlayerModel player = new PlayerModel(1, 50, 0, monsters, "Player1");
+        PlayerModel player = new PlayerModel(1, null, "Player1");
         when(playerService.gainExp("1", 10)).thenReturn(player);
-
-        PlayerModel result = playerController.gainExp("1", 10).getBody();
-
+        PlayerModel result = playerController.gainExp("1", new GainExperienceRequestDto(10)).getBody();
         assertEquals(player, result);
     }
 
+
     @Test
     void listMonstersOfPlayerReturnsMonsters() {
-       //TODO
+        List<String> monsters = Arrays.asList("monster1", "monster2");
+        when(playerService.listMonstersOfPlayer("1")).thenReturn(monsters);
+
+        ResponseEntity<List<String>> response = playerController.listMonstersOfPlayer("1");
+
+        assertEquals(monsters, response.getBody());
     }
 
     @Test
-    void invalidPlayerConfigurationReturnsTrueForInvalidConfiguration() {
-        List<String> monsters = Arrays.asList("monster1", "monster2");
-        PlayerModel player = new PlayerModel(1, 50, 0, monsters, "Player1");
-        player.setLevel(1);
-        player.setExp(50);
-        player.setCurr_exp(0);
+    void addMonsterToPlayerReturnsSuccessMessage() {
+        String playerId = "1";
+        String monsterId = "monster1";
+        when(playerService.addMonsterToPlayer(playerId, monsterId)).thenReturn("Monster added successfully");
 
-        boolean result = player.invalidPlayerConfiguration();
+        ResponseEntity<String> response = playerController.addMonsterToPlayer(playerId, monsterId);
 
-        // Assuming the invalid configuration is for the level or exp mismatch
-        assertEquals(true, result);
-    }
-
-
-    @Test
-    void increaseNecessaryExpForLevelUpReturnsCorrectExp() {
-        List<String> monsters = Arrays.asList("monster1", "monster2");
-        PlayerModel player = new PlayerModel(1, 50, 0, monsters, "Player1");
-        player.increaseNecessaryExpForLevelUp();
-
-        assertEquals(50, player.getExp());
+        assertEquals("Monster added successfully", response.getBody());
     }
 }
-*/

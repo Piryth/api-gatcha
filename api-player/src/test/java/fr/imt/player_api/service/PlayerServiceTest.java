@@ -8,15 +8,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-/*
 class PlayerServiceTest {
 
     @Mock
@@ -25,38 +23,60 @@ class PlayerServiceTest {
     @InjectMocks
     private PlayerService playerService;
 
-    private PlayerModel player;
-
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        player = new PlayerModel(1, 50, 0, Arrays.asList("monster1", "monster2"), "Player1");
     }
 
     @Test
-    void createPlayerReturnsCreatedPlayer() {
-        // Exemple de joueur avec des données valides
-        List<String> monsters = new ArrayList<>();
-        for (int i = 0; i < 11; i++) {
-            monsters.add("Monster" + i);
-        }
+    void levelUpIncreasesPlayerLevel() {
+        List<String> monsters = Arrays.asList("monster1", "monster2");
+        PlayerModel player = new PlayerModel(1, null, "Player1");
+        player.setXpForNextLevel(100);
 
-        PlayerModel validPlayer = new PlayerModel(1, 50, 0, monsters, "TestPlayer");
+        when(playerRepository.findById(player.getId())).thenReturn(Optional.of(player));
+        when(playerRepository.save(player)).thenReturn(player);
 
-        // Simuler le comportement du repository
-        when(playerRepository.save(any(PlayerModel.class))).thenReturn(validPlayer);
+        PlayerModel updatedPlayer = playerService.levelUp(player.getId());
 
-        // Créer le joueur
-        PlayerModel result = playerService.createPlayer(validPlayer);
-
-        // Vérifier que le joueur créé est bien celui attendu
-        assertEquals(validPlayer, result);
+        assertEquals(2, updatedPlayer.getLevel());
+        assertEquals(0, updatedPlayer.getExp());
+        verify(playerRepository, times(1)).save(player);
     }
 
+    @Test
+    void getLevelOfPlayerReturnsCorrectLevel() {
+        List<String> monsters = Arrays.asList("monster1", "monster2");
+        PlayerModel player = new PlayerModel(1, null, "Player1");
+
+        when(playerRepository.findById(player.getId())).thenReturn(Optional.of(player));
+
+        int level = playerService.getLevelOfPlayer(player.getId());
+
+        assertEquals(1, level);
+    }
 
     @Test
-    void listPlayersReturnsListOfPlayers() {
-        List<PlayerModel> players = Arrays.asList(player, new PlayerModel(2, 100, 0, Arrays.asList("monster3"), "Player2"));
+    void createPlayerSavesPlayer() {
+        List<String> monsters = Arrays.asList("monster1", "monster2");
+        PlayerModel player = new PlayerModel(1, null, "Player1");
+
+        when(playerRepository.save(player)).thenReturn(player);
+
+        PlayerModel createdPlayer = playerService.createPlayer(player);
+
+        assertEquals(player, createdPlayer);
+        verify(playerRepository, times(1)).save(player);
+    }
+
+    @Test
+    void listPlayersReturnsAllPlayers() {
+        List<String> monsters = Arrays.asList("monster1", "monster2");
+        List<PlayerModel> players = Arrays.asList(
+                new PlayerModel(1, null, "Player1"),
+                new PlayerModel(2, null, "Player2")
+        );
+
         when(playerRepository.findAll()).thenReturn(players);
 
         List<PlayerModel> result = playerService.listPlayers();
@@ -66,72 +86,79 @@ class PlayerServiceTest {
 
     @Test
     void getPlayerReturnsPlayerById() {
-        when(playerRepository.findById("1")).thenReturn(Optional.of(player));
+        List<String> monsters = Arrays.asList("monster1", "monster2");
+        PlayerModel player = new PlayerModel(1, null, "Player1");
 
-        Optional<PlayerModel> result = playerService.getPlayer("1");
+        when(playerRepository.findById(player.getId())).thenReturn(Optional.of(player));
 
-        assertEquals(Optional.of(player), result);
+        PlayerModel result = playerService.getPlayer(player.getId());
+
+        assertEquals(player, result);
     }
 
     @Test
-    void getPlayerReturnsEmptyWhenNotFound() {
-        when(playerRepository.findById("1")).thenReturn(Optional.empty());
+    void deletePlayerReturnsSuccessMessage() {
+        String id = "1";
+        when(playerRepository.existsById(id)).thenReturn(true);
 
-        Optional<PlayerModel> result = playerService.getPlayer("1");
+        String result = playerService.deletePlayer(id);
 
-        assertEquals(Optional.empty(), result);
-    }
-
-    @Test
-    void deletePlayerReturnsMessage() {
-        String playerId = "1";
-        PlayerModel player = new PlayerModel(10, 100, 50, new ArrayList<>(), "TestPlayer");
-
-        // Simule que le joueur existe
-        when(playerRepository.findById(playerId)).thenReturn(Optional.of(player));
-
-        // Simule la suppression du joueur
-        doNothing().when(playerRepository).deleteById(playerId);
-
-        String result = playerService.deletePlayer(playerId);
-
-        // Vérifie que le message retourné est "Player deleted successfully"
         assertEquals("Player deleted successfully", result);
+        verify(playerRepository, times(1)).deleteById(id);
     }
 
     @Test
-    void deletePlayerReturnsMessageWhenPlayerDoesNotExist() {
-        when(playerRepository.existsById("1")).thenReturn(false);
+    void gainExpIncreasesPlayerExp() {
+        List<String> monsters = Arrays.asList("monster1", "monster2");
+        PlayerModel player = new PlayerModel(1, null, "Player1");
+        player.setXpForNextLevel(100);
 
-        String result = playerService.deletePlayer("1");
+        when(playerRepository.findById(player.getId())).thenReturn(Optional.of(player));
+        when(playerRepository.save(player)).thenReturn(player);
 
-        assertEquals("No such player", result);
-    }
+        PlayerModel updatedPlayer = playerService.gainExp(player.getId(), 30);
 
-    @Test
-    void levelUpReturnsUpdatedPlayer() {
-        when(playerRepository.findById("1")).thenReturn(Optional.of(player));
-        when(playerRepository.save(any(PlayerModel.class))).thenReturn(player);
-
-        PlayerModel result = playerService.levelUp("1");
-
-        assertEquals(player, result);
-    }
-
-    @Test
-    void gainExpReturnsUpdatedPlayer() {
-        when(playerRepository.findById("1")).thenReturn(Optional.of(player));
-        when(playerRepository.save(any(PlayerModel.class))).thenReturn(player);
-
-        PlayerModel result = playerService.gainExp("1", 10);
-
-        assertEquals(player, result);
+        assertEquals(30, updatedPlayer.getExp());
+        verify(playerRepository, times(1)).save(player);
     }
 
     @Test
     void listMonstersOfPlayerReturnsMonsters() {
-        //TODO
+        List<String> monsters = Arrays.asList("monster1", "monster2");
+        PlayerModel player = new PlayerModel(1, monsters, "Player1");
+
+        when(playerRepository.findById(player.getId())).thenReturn(Optional.of(player));
+
+        List<String> result = playerService.listMonstersOfPlayer(player.getId());
+
+        assertEquals(monsters, result);
     }
 
+    @Test
+    void addMonsterToPlayerAddsMonster() {
+        List<String> monsters = Arrays.asList("monster1", "monster2");
+        PlayerModel player = new PlayerModel(1, monsters, "Player1");
+
+        when(playerRepository.findById(player.getId())).thenReturn(Optional.of(player));
+        when(playerRepository.save(player)).thenReturn(player);
+
+        String result = playerService.addMonsterToPlayer(player.getId(), "monster3");
+
+        assertEquals("Monster added successfully", result);
+        assertTrue(player.getMonsters().contains("monster3"));
+        verify(playerRepository, times(1)).save(player);
+    }
+
+    @Test
+    void addMonsterToPlayerThrowsExceptionWhenMaxMonstersReached() {
+        List<String> monsters = Arrays.asList("monster1", "monster2", "monster3", "monster4",
+                "monster5", "monster6", "monster7", "monster8",
+                "monster9", "monster10", "monster11");
+        PlayerModel player = new PlayerModel(1, monsters, "Player1");
+
+        when(playerRepository.findById(player.getId())).thenReturn(Optional.of(player));
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> playerService.addMonsterToPlayer(player.getId(), "monster12"));
+        assertEquals("Player already has maximum number of monsters", exception.getMessage());
+    }
 }
-*/
