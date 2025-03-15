@@ -19,9 +19,11 @@ spring:
             url: "http://player-api:8080/"
 springdoc:
   api-docs:
-    path: "/invocation-api/docs"
+    path: "/invocation-api/v3/api-docs"
+    enabled: true
   swagger-ui:
     path: "/invocation-api/swagger-ui.html"
+    enabled: true
 eureka:
   client:
     serviceUrl:

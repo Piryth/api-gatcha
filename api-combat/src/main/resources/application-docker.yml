@@ -17,9 +17,11 @@ spring:
             url: "http://monster-api:8080/"
 springdoc:
   api-docs:
-    path: "/combat-api/docs"
+    path: "/combat-api/v3/api-docs"
+    enabled: true
   swagger-ui:
     path: "/combat-api/swagger-ui.html"
+    enabled: true
 eureka:
   client:
     serviceUrl:

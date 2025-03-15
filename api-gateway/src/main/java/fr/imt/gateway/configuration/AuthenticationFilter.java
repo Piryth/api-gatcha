@@ -2,7 +2,6 @@ package fr.imt.gateway.configuration;
 
 import fr.imt.gateway.exception.JwtTokenMalformedException;
 import fr.imt.gateway.service.JwtService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -16,7 +15,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.Objects;
 
-@Slf4j
 @Component
 public class AuthenticationFilter extends AbstractGatewayFilterFactory<AuthenticationFilter.Config> {
 
@@ -75,7 +73,6 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     }
 
     private Mono<Void> onError(ServerWebExchange exchange, String message, HttpStatus httpStatus) {
-        log.error(message);
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(httpStatus);
         return response.setComplete();

@@ -13,9 +13,11 @@ spring:
       authentication-database: admin
 springdoc:
   api-docs:
-    path: "/auth-api/docs"
+    path: "/auth-api/v3/api-docs"
+    enabled: true
   swagger-ui:
     path: "/auth-api/swagger-ui.html"
+    enabled: true
 eureka:
   client:
     serviceUrl:
