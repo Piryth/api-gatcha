@@ -1,6 +1,6 @@
 package fr.imt.combat_api.service;
 
-import fr.imt.combat_api.client.MonsterApiService;
+import fr.imt.combat_api.client.MonsterClient;
 import fr.imt.combat_api.model.Combat;
 import fr.imt.combat_api.model.Ratio;
 import fr.imt.combat_api.model.Round;
@@ -15,11 +15,11 @@ import java.util.*;
 public class CombatService {
 
     private final CombatRepository combatRepository;
-    private final MonsterApiService monsterApiService;
+    private final MonsterClient monsterClient;
 
-    public CombatService(CombatRepository combatRepository, MonsterApiService monsterApiService) {
+    public CombatService(CombatRepository combatRepository, MonsterClient monsterClient) {
         this.combatRepository = combatRepository;
-        this.monsterApiService = monsterApiService;
+        this.monsterClient = monsterClient;
     }
 
     public Combat startCombat(String idMonstre1, String idMonstre2) {
@@ -27,8 +27,8 @@ public class CombatService {
         combat.setMonsterIds(Arrays.asList(idMonstre1, idMonstre2));
         combat.setRounds(new ArrayList<>());
 
-        MonsterResponse monster1 = monsterApiService.getMonster(idMonstre1).block();
-        MonsterResponse monster2 = monsterApiService.getMonster(idMonstre2).block();
+        MonsterResponse monster1 = monsterClient.getMonster(idMonstre1);
+        MonsterResponse monster2 = monsterClient.getMonster(idMonstre2);
 
         assert monster1 != null;
         assert monster2 != null;

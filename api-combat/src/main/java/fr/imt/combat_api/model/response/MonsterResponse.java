@@ -1,13 +1,13 @@
 package fr.imt.combat_api.model.response;
 
 import fr.imt.combat_api.model.Type;
-import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Value;
+import org.springframework.data.annotation.Id;
 
 import java.util.List;
 

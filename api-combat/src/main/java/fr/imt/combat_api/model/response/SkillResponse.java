@@ -1,9 +1,9 @@
 package fr.imt.combat_api.model.response;
 
 import fr.imt.combat_api.model.Ratio;
-import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
