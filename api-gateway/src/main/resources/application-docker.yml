@@ -54,6 +54,14 @@ spring:
             - AuthenticationFilter
             - RewritePath=/invocations/(?<remaining>.*), /invocation-api/v1/invocations/${remaining}
 
+        - id: api-combat
+          uri: lb://api-combat
+          predicates:
+            - Path=/combats/**
+          filters:
+            - AuthenticationFilter
+            - RewritePath=/combats/(?<remaining>.*), /combat-api/v1/combats/${remaining}
+
         - id: block-all
           uri: "no://op"
           predicates:

@@ -12,7 +12,11 @@ spring:
       username: root
       password: example
       authentication-database: admin
-
+springdoc:
+  api-docs:
+    path: "/monster-api/docs"
+  swagger-ui:
+    path: "/monster-api/swagger-ui.html"
 eureka:
   client:
     serviceUrl:

@@ -19,6 +19,11 @@ spring:
             url: "http://localhost:8083/"
           api-player:
             url: "http://localhost:8081/"
+springdoc:
+  api-docs:
+    path: "/invocation-api/docs"
+  swagger-ui:
+    path: "/invocation-api/swagger-ui.html"
 eureka:
   client:
     serviceUrl:

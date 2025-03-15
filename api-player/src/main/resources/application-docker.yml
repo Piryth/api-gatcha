@@ -9,6 +9,11 @@ spring:
       username: root
       password: example
       authentication-database: admin
+springdoc:
+  api-docs:
+    path: "/player-api/docs"
+  swagger-ui:
+    path: "/player-api/swagger-ui.html"
 eureka:
   client:
     serviceUrl:

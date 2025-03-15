@@ -17,6 +17,11 @@ spring:
             url: "http://monster-api:8080/"
           api-player:
             url: "http://player-api:8080/"
+springdoc:
+  api-docs:
+    path: "/invocation-api/docs"
+  swagger-ui:
+    path: "/invocation-api/swagger-ui.html"
 eureka:
   client:
     serviceUrl:
