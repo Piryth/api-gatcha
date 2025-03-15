@@ -61,7 +61,7 @@ export function Invoc() {
 
   async function fetchPlayers() {
     try {
-      const response = await axiosConfig.get('/players/list');
+      const response = await axiosConfig.get('/player-api/v1/players/list');
       const data = await response.data;
       setPlayers(data);
     } catch (error) {
@@ -71,7 +71,7 @@ export function Invoc() {
 
   async function fetchInvocs() {
     try {
-      const response = await axiosConfig.get('/invocations/list');
+      const response = await axiosConfig.get('/invocation-api/v1/invocations/list');
       const data = await response.data;
       setInvocs(data);
       toast.success('Invocations récupérés avec succès');
@@ -82,7 +82,7 @@ export function Invoc() {
 
   async function deleteInvoc() {
     try {
-      await axiosConfig.delete('/invocations/delete');
+      await axiosConfig.delete('/invocation-api/v1/invocations/delete');
       setInvocs([]);
       toast.success('Invocations supprimés avec succès');
     } catch (error) {
@@ -92,7 +92,7 @@ export function Invoc() {
 
   async function randomInvoc(values: z.infer<typeof invocSchema>) {
     try {
-      const response = await axiosConfig.get(`/invocations/random/${values.playerId}`);
+      const response = await axiosConfig.get(`/invocation-api/v1/invocations/random/${values.playerId}`);
       const data = await response.data;
       setInvocs(data);
       setDialogOpen(false);
@@ -103,6 +103,11 @@ export function Invoc() {
   }
 
   const columns: ColumnDef<Invoc>[] = [
+    {
+      accessorKey: 'id',
+      header: 'Id',
+      cell: ({ row }) => <div>{row.getValue('id')}</div>,
+    },
     {
       accessorKey: 'name',
       header: 'Nom',

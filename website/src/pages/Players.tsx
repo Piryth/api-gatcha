@@ -70,7 +70,7 @@ export function Players() {
 
   async function fetchPlayers() {
     try {
-      const response = await axiosConfig.get('/players/list');
+      const response = await axiosConfig.get('/player-api/v1/players/list');
       const data = await response.data;
       setPlayers(data);
       toast.success('Joueurs récupérés avec succès');
@@ -92,7 +92,7 @@ export function Players() {
 
   async function levelUp(playerId: String) {
     try {
-      await axiosConfig.get(`/players/${playerId}/levelUp`);
+      await axiosConfig.get(`/player-api/v1/players/${playerId}/levelUp`);
       await fetchPlayers();
       const playerName = players.find((p) => p.id == playerId)?.name;
       toast.success(`Joueur ${playerName} amélioré avec succès`);
@@ -103,7 +103,7 @@ export function Players() {
 
   async function createNewPlayer(values: z.infer<typeof newPlayerSchema>) {
     try {
-      await axiosConfig.post(`/players/new`, values);
+      await axiosConfig.post(`/player-api/v1/players/new`, values);
       setOpen(false);
       form.reset();
       await fetchPlayers();
@@ -117,7 +117,7 @@ export function Players() {
     try {
       const player = players.find((p) => p.id == values.id);
       delete values.id;
-      await axiosConfig.post(`http://localhost:8888/players/${player.id}/gainExp`, values);
+      await axiosConfig.post(`/player-api/v1/players/${player.id}/gainExp`, values);
       setOpen2(false);
       formExp.reset();
       await fetchPlayers();
@@ -128,6 +128,11 @@ export function Players() {
   }
 
   const columns: ColumnDef<Player>[] = [
+    {
+      accessorKey: 'id',
+      header: 'Id',
+      cell: ({ row }) => <div>{row.getValue('id')}</div>,
+    },
     {
       accessorKey: 'name',
       header: 'Nom',

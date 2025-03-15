@@ -32,7 +32,7 @@ export const Register = () => {
     try {
       const response = await axiosConfig.post('/auth-api/v1/auth/register', values);
       const data = await response.data;
-      document.cookie = `Bearer=${data.token}; path=/; SameSite=Lax`;
+      localStorage.setItem('token', data.token);
       toast.success('Account created successfuly');
       setAuthUser(data.user);
       navigate('/');

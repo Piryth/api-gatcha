@@ -28,7 +28,7 @@ export default function LoginPage() {
     try {
       const response = await axiosConfig.post('/auth-api/v1/auth/login', values);
       const data = response.data;
-      document.cookie = `Bearer=${data.token}; path=/; SameSite=Lax`;
+      localStorage.setItem('token', data.token);
       toast.success('Utilisateur connecté avec succès');
       setAuthUser(data.user);
       navigate('/');

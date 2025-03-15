@@ -120,6 +120,16 @@ services:
       discovery-server:
         condition: service_healthy
 
+  frontend:
+    build:
+      dockerfile: ./website/Dockerfile
+      args:
+        BACKEND_URL: "http://gateway-api:8888"
+    container_name: frontend
+    ports:
+      - "5173:5173"
+    restart: on-failure
+
   prometheus:
     image: prom/prometheus
     volumes:
