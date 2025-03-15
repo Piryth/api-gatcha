@@ -107,6 +107,19 @@ services:
       discovery-server:
         condition: service_healthy
 
+  combat-api:
+    build:
+      dockerfile: ./api-combat/Dockerfile
+    container_name: combat-api
+    links:
+      - mongodb-gatcha
+    restart: on-failure
+    depends_on:
+      mongodb-gatcha:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+
   prometheus:
     image: prom/prometheus
     volumes:

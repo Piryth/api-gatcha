@@ -12,8 +12,7 @@ spring:
     name: api-gateway
   cloud:
     discovery:
-      locator:
-        enabled: true
+      enabled: true
     gateway:
       globalcors:
         corsConfigurations:
@@ -22,48 +21,74 @@ spring:
             allowedMethods: "*"
             allowedHeaders: "*"
       discovery:
-        enabled: true
-        lower-case-service-id: true
+        locator:
+          enabled: true
+          lower-case-service-id: true
       routes:
         - id: api-authentication
           uri: lb://api-authentication
           predicates:
-            - Path=/auth-api/v1/auth/**
+            - Path=/auth-api/**
 
         - id: api-player
           uri: lb://api-player
           predicates:
-            - Path=/players/**
+            - Path=/player-api/**
           filters:
             - AuthenticationFilter
-            - RewritePath=/players/(?<remaining>.*), /player-api/v1/players/${remaining}
 
         - id: api-monster
           uri: lb://api-monster
           predicates:
-            - Path=/monsters/**
+            - Path=/monster-api/**
           filters:
             - AuthenticationFilter
-            - RewritePath=/monsters/(?<remaining>.*), /monster-api/v1/monsters/${remaining}
 
         - id: api-invocation
           uri: lb://api-invocation
           predicates:
-            - Path=/invocations/**
+            - Path=/invocation-api/**
           filters:
             - AuthenticationFilter
-            - RewritePath=/invocations/(?<remaining>.*), /invocation-api/v1/invocations/${remaining}
+
+        - id: api-combat
+          uri: lb://api-combat
+          predicates:
+            - Path=/combat-api/**
+          filters:
+            - AuthenticationFilter
 
         - id: block-all
           uri: "no://op"
           predicates:
-            - Path=/**
+            - Path=/{segment:^(?!swagger-ui|v3\/api-docs).*$}/**
           filters:
             - name: SetStatus
               args:
                 status: 404
   main:
     web-application-type: reactive
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    urls:
+      - name: API Gateway
+        url: /v3/api-docs
+      - name: Authentication Service
+        url: /auth-api/v3/api-docs
+      - name: Player Service
+        url: /player-api/v3/api-docs
+      - name: Invocation Service
+        url: /invocation-api/v3/api-docs
+      - name: Monster Service
+        url: /monster-api/v3/api-docs
+      - name: Combat Service
+        url: /combat-api/v3/api-docs
 
 eureka:
   client:

@@ -66,6 +66,23 @@ docker compose -f "docker-compose.yml" up -d
 - Access the Prometheus monitoring server at [http://localhost:9090](http://localhost:9090)
 - Access the Grafana dashboard at [http://localhost:3000](http://localhost:3000)
 
+## Database
+
+- We use MongoDB as the main database for this project.
+- It is seeded with players and invocations on startup.
+- MongoDB collections can be initialized with JSON files available in `docker-conf/mongodb/seed`.
+
+You can access the MongoDB database using the following credentials:
+- **Username:** root
+- **Password:** example
+- **Port:** 27019
+
+or on this URL: [mongodb://root:example@localhost:27019/](mongodb://root:example@localhost:27019/)
+
+## Endpoint documentation
+
+You can get all the services **swagger documentation** from the gateway at [http://localhost:8888/swagger-ui.html](http://localhost:8888/swagger-ui.html)
+
 ## Project Structure
 ```
 /
@@ -102,12 +119,6 @@ docker compose -f "docker-compose.yml" up -d
 ├── README.md
 └── pom.xml
 ```
-
-## Database
-
-- We use MongoDB as the main database for this project.
-- It is seeded with players and invocations on startup.
-- MongoDB collections can be initialized with JSON files available in `docker-conf/mongodb/seed`.
 
 ## Authors
 
