@@ -93,10 +93,9 @@ export function Invoc() {
   async function randomInvoc(values: z.infer<typeof invocSchema>) {
     try {
       const response = await axiosConfig.get(`/invocation-api/v1/invocations/random/${values.playerId}`);
-      const data = await response.data;
-      setInvocs(data);
+      const monster = await response.data;
       setDialogOpen(false);
-      toast.success('Invocation aléatoire réussie, rendez vous sur la page des monstres');
+      toast.success(`Vous avez invoqué un ${monster.name}, rendez vous sur la page des monstres`);
     } catch (error) {
       toast.error("Erreur lors de l'invocation aléatoire :", error);
     }

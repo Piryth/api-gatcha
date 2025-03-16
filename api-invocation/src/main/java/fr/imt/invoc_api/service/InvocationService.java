@@ -3,7 +3,7 @@ package fr.imt.invoc_api.service;
 import fr.imt.invoc_api.client.MonsterClient;
 import fr.imt.invoc_api.client.PlayerClient;
 import fr.imt.invoc_api.model.Invocation;
-import fr.imt.invoc_api.model.response.MonsterResponse;
+import fr.imt.invoc_api.dto.MonsterResponse;
 import fr.imt.invoc_api.model.save.SaveInvocation;
 import fr.imt.invoc_api.repository.InvocationRepository;
 import fr.imt.invoc_api.repository.SaveInvocationRepository;
@@ -29,7 +29,7 @@ public class InvocationService {
         this.playerClient = playerClient;
     }
 
-    public Invocation getRandomInvocation(String playerId) throws IllegalStateException {
+    public MonsterResponse getRandomInvocation(String playerId) throws IllegalStateException {
         List<Invocation> invocations = invocationRepository.findAll();
 
         if (invocations.isEmpty()) {
@@ -58,12 +58,12 @@ public class InvocationService {
                 .invocation(invocation)
                 .build();
 
-        MonsterResponse monster = monsterClient.createMonster(invocation);
+        MonsterResponse monster = monsterClient.createMonster(invocation.convertToMonsterRequest());
         playerClient.addMonster(playerId, monster.getId());
 
         saveInvocationRepository.save(saveInvocation);
 
-        return invocation;
+        return monster;
     }
 
     public List<Invocation> getInvocations() {

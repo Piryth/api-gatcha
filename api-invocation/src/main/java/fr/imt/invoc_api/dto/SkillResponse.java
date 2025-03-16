@@ -1,4 +1,4 @@
-package fr.imt.invoc_api.model.response;
+package fr.imt.invoc_api.dto;
 
 import fr.imt.invoc_api.model.Ratio;
 import lombok.Value;

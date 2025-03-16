@@ -1,10 +1,16 @@
 package fr.imt.monster_api.service;
 
+import fr.imt.monster_api.dto.MonsterRequest;
+import fr.imt.monster_api.dto.SkillRequest;
+import fr.imt.monster_api.model.ElementType;
 import fr.imt.monster_api.model.Monster;
 import fr.imt.monster_api.model.Skill;
 import fr.imt.monster_api.repository.MonsterRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -15,13 +21,15 @@ import static org.mockito.Mockito.*;
 
 class MonsterServiceTest {
 
+    @Mock
     private MonsterRepository monsterRepository;
+
+    @InjectMocks
     private MonsterService monsterService;
 
     @BeforeEach
     void setUp() {
-        monsterRepository = mock(MonsterRepository.class);
-        monsterService = new MonsterService(monsterRepository);
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
@@ -56,13 +64,38 @@ class MonsterServiceTest {
 
     @Test
     void addMonster_ShouldSaveAndReturnMonster() {
-        Monster monster = new Monster();
-        when(monsterRepository.save(monster)).thenReturn(monster);
+        MonsterRequest monsterRequest = MonsterRequest.builder()
+                .name("Fire Dragon")
+                .element(ElementType.FIRE)
+                .hp(100)
+                .atk(50)
+                .def(30)
+                .vit(10)
+                .skills(List.of(SkillRequest.builder().build()))
+                .build();
 
-        Monster savedMonster = monsterService.addMonster(monster);
+        Monster monster = monsterRequest.convertToMonster();
+        monster.setId("monster-123");
 
-        assertNotNull(savedMonster);
-        verify(monsterRepository).save(monster);
+        when(monsterRepository.save(any(Monster.class))).thenAnswer(invocation -> {
+            Monster toSave = invocation.getArgument(0);
+            toSave.setId("monster-123"); // Simulate ID assignment
+            return toSave;
+        });
+
+        Monster result = monsterService.addMonster(monsterRequest);
+
+        assertNotNull(result);
+
+        assertEquals(monster.getName(), result.getName());
+        assertEquals(monster.getElement(), result.getElement());
+        assertEquals(monster.getHp(), result.getHp());
+        assertEquals(monster.getAtk(), result.getAtk());
+        assertEquals(monster.getDef(), result.getDef());
+        assertEquals(monster.getVit(), result.getVit());
+        assertEquals(monster.getSkills(), result.getSkills());
+
+        verify(monsterRepository, times(1)).save(monster);
     }
 
     @Test
@@ -78,7 +111,12 @@ class MonsterServiceTest {
     @Test
     void updateMonster_Invalid_ShouldThrowException() {
         Monster monster = new Monster();
-        monster.setSkills(List.of(new Skill(), new Skill(), new Skill(), new Skill()));
+        monster.setSkills(List.of(
+                Skill.builder().build(),
+                Skill.builder().build(),
+                Skill.builder().build(),
+                Skill.builder().build()
+        ));
 
         assertThrows(IllegalArgumentException.class, () -> monsterService.updateMonster(monster));
     }
