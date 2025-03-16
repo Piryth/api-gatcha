@@ -1,0 +1,27 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: api-player
+  data:
+    mongodb:
+      host: localhost
+      database: api_player
+      port: 27019
+      username: root
+      password: example
+      authentication-database: admin
+springdoc:
+  api-docs:
+    path: "/player-api/v3/api-docs"
+    enabled: true
+  swagger-ui:
+    path: "/player-api/swagger-ui.html"
+    enabled: true
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    preferIpAddress: true

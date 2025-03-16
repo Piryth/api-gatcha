@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: api-invocation
+  data:
+    mongodb:
+      host: mongodb-gatcha
+      database: api_invocation
+      port: 27017
+      username: root
+      password: example
+      authentication-database: admin
+  cloud:
+    openfeign:
+      client:
+        config:
+          api-monster:
+            url: "http://monster-api:8080/"
+          api-player:
+            url: "http://player-api:8080/"
+springdoc:
+  api-docs:
+    path: "/invocation-api/v3/api-docs"
+    enabled: true
+  swagger-ui:
+    path: "/invocation-api/swagger-ui.html"
+    enabled: true
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://discovery-server:8761/eureka}
+  instance:
+    preferIpAddress: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

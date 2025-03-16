@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: api-player
+  data:
+    mongodb:
+      host: mongodb-gatcha
+      database: api_player
+      port: 27017
+      username: root
+      password: example
+      authentication-database: admin
+springdoc:
+  api-docs:
+    path: "/player-api/v3/api-docs"
+    enabled: true
+  swagger-ui:
+    path: "/player-api/swagger-ui.html"
+    enabled: true
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://discovery-server:8761/eureka}
+  instance:
+    preferIpAddress: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

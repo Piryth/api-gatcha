@@ -1,0 +1,31 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: api-authentication
+  data:
+    mongodb:
+      host: localhost
+      database: api_auth
+      port: 27019
+      username: root
+      password: example
+      authentication-database: admin
+springdoc:
+  api-docs:
+    path: "/auth-api/v3/api-docs"
+    enabled: true
+  swagger-ui:
+    path: "/auth-api/swagger-ui.html"
+    enabled: true
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    preferIpAddress: true
+jwt:
+  private:
+    file: certs/jwt-private-key-example.pem
+  public:
+    file: certs/jwt-public-key-example.pem
