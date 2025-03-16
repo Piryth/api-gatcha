@@ -1,5 +1,6 @@
 package fr.imt.invoc_api.controller;
 
+import fr.imt.invoc_api.dto.MonsterResponse;
 import fr.imt.invoc_api.model.Invocation;
 import org.junit.jupiter.api.Test;
 
@@ -34,22 +35,21 @@ class InvocationControllerTest {
 
     @Test
     void getInvocationReturnsRandomInvocation() {
-        Invocation invocation = Invocation.builder().id("1").build();
+        MonsterResponse monsterResponse = MonsterResponse.builder().id("1").build();
+        when(invocationService.getRandomInvocation("playerId")).thenReturn(monsterResponse);
 
-        when(invocationService.getRandomInvocation("playerId")).thenReturn(invocation);
+        ResponseEntity<MonsterResponse> response = invocationController.getInvocation("playerId");
 
-        Invocation result = invocationController.getInvocation("playerId").getBody();
-
-        assertEquals(invocation, result);
+        assertEquals(ResponseEntity.ok(monsterResponse), response);
     }
 
     @Test
-    void getInvocationReturnsNullWhenNoInvocation() {
-        when(invocationService.getRandomInvocation("playerId")).thenReturn(null);
+    void getInvocationReturnsInternalServerErrorWhenExceptionThrown() {
+        when(invocationService.getRandomInvocation("playerId")).thenThrow(new IllegalStateException());
 
-        Invocation result = invocationController.getInvocation("playerId").getBody();
+        ResponseEntity<MonsterResponse> response = invocationController.getInvocation("playerId");
 
-        assertNull(result);
+        assertEquals(ResponseEntity.internalServerError().body(null), response);
     }
 
     @Test

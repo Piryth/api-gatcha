@@ -2,7 +2,7 @@ FROM node:22.9-alpine
 LABEL authors="champeic"
 
 ARG BACKEND_URL
-ENV VITE_BACKEND_URL=$BACKEND_URL
+ENV BACKEND_URL=$BACKEND_URL
 
 RUN mkdir -p /app
 WORKDIR /app

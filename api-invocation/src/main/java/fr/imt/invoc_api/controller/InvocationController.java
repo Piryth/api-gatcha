@@ -1,5 +1,6 @@
 package fr.imt.invoc_api.controller;
 
+import fr.imt.invoc_api.dto.MonsterResponse;
 import fr.imt.invoc_api.model.Invocation;
 import fr.imt.invoc_api.service.InvocationService;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ public class InvocationController {
     }
 
     @GetMapping("/random/{playerId}")
-    public ResponseEntity<Invocation> getInvocation(@PathVariable String playerId) {
+    public ResponseEntity<MonsterResponse> getInvocation(@PathVariable String playerId) {
         try {
             return ResponseEntity.ok(invocationService.getRandomInvocation(playerId));
         } catch (IllegalStateException e) {

@@ -1,5 +1,6 @@
 package fr.imt.monster_api.controller;
 
+import fr.imt.monster_api.dto.MonsterRequest;
 import fr.imt.monster_api.model.Monster;
 import fr.imt.monster_api.service.MonsterService;
 import org.springframework.http.HttpStatus;
@@ -36,9 +37,9 @@ public class MonsterController {
 
     // Ajouter un monstre
     @PostMapping("/new")
-    public ResponseEntity<Monster> addMonster(@RequestBody Monster monster) {
+    public ResponseEntity<Monster> addMonster(@RequestBody MonsterRequest monsterRequest) {
         try {
-            Monster savedMonster = monsterService.addMonster(monster);
+            Monster savedMonster = monsterService.addMonster(monsterRequest);
             return ResponseEntity.ok(savedMonster);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(null); // Erreur si plus de 3 compétences

@@ -1,5 +1,6 @@
 package fr.imt.monster_api.service;
 
+import fr.imt.monster_api.dto.MonsterRequest;
 import fr.imt.monster_api.model.Monster;
 import fr.imt.monster_api.repository.MonsterRepository;
 import org.springframework.stereotype.Service;
@@ -28,9 +29,8 @@ public class MonsterService {
     }
 
     // Ajouter un monstre
-    public Monster addMonster(Monster monster) {
-        monster.setLevel(0);
-        return monsterRepository.save(monster);
+    public Monster addMonster(MonsterRequest monsterRequest) {
+        return monsterRepository.save(monsterRequest.convertToMonster());
     }
 
     // Ajouter plusieurs monstres

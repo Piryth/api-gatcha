@@ -1,9 +1,16 @@
 package fr.imt.monster_api.controller;
 
+import fr.imt.monster_api.dto.MonsterRequest;
+import fr.imt.monster_api.dto.SkillRequest;
+import fr.imt.monster_api.model.ElementType;
 import fr.imt.monster_api.model.Monster;
+import fr.imt.monster_api.model.Skill;
 import fr.imt.monster_api.service.MonsterService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -16,13 +23,15 @@ import static org.springframework.http.HttpStatus.*;
 
 class MonsterControllerTest {
 
+    @Mock
     private MonsterService monsterService;
+
+    @InjectMocks
     private MonsterController monsterController;
 
     @BeforeEach
     void setUp() {
-        monsterService = mock(MonsterService.class);
-        monsterController = new MonsterController(monsterService);
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
@@ -60,20 +69,40 @@ class MonsterControllerTest {
 
     @Test
     void addMonster_Valid_ShouldReturnSavedMonster() {
-        Monster monster = new Monster();
-        when(monsterService.addMonster(any())).thenReturn(monster);
+        MonsterRequest monsterRequest = MonsterRequest.builder()
+                .name("Fire Dragon")
+                .element(ElementType.FIRE)
+                .hp(100)
+                .atk(50)
+                .def(30)
+                .vit(10)
+                .skills(List.of(SkillRequest.builder().build()))
+                .build();
 
-        ResponseEntity<Monster> response = monsterController.addMonster(monster);
+        Monster expectedMonster = monsterRequest.convertToMonster();
+        expectedMonster.setId("monster-123");
 
-        assertEquals(OK, response.getStatusCode());
-        assertNotNull(response.getBody());
+        when(monsterService.addMonster(monsterRequest)).thenReturn(expectedMonster);
+
+        Monster result = monsterService.addMonster(monsterRequest);
+
+        assertEquals(expectedMonster.getId(), result.getId());
+        assertEquals(expectedMonster.getName(), result.getName());
+        assertEquals(expectedMonster.getElement(), result.getElement());
+        assertEquals(expectedMonster.getHp(), result.getHp());
+        assertEquals(expectedMonster.getAtk(), result.getAtk());
+        assertEquals(expectedMonster.getDef(), result.getDef());
+        assertEquals(expectedMonster.getVit(), result.getVit());
+        assertEquals(expectedMonster.getSkills(), result.getSkills());
+
+        verify(monsterService, times(1)).addMonster(monsterRequest);
     }
 
     @Test
     void addMonster_Invalid_ShouldReturn400() {
         when(monsterService.addMonster(any())).thenThrow(new IllegalArgumentException());
 
-        ResponseEntity<Monster> response = monsterController.addMonster(new Monster());
+        ResponseEntity<Monster> response = monsterController.addMonster(new MonsterRequest());
 
         assertEquals(BAD_REQUEST, response.getStatusCode());
     }
